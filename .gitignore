@@ -3,11 +3,16 @@
 # ----------------------------------------------------------------------
 # Ignora la cartella di output di Maven
 target/
+dispatcher/target/
 
 # Ignora i log e i report di test di Maven
 target/surefire-reports/*
 target/failsafe-reports/*
 test-output/
+
+dispatcher/target/surefire-reports/*
+dispatcher/target/failsafe-reports/*
+dispatcher/test-output/
 
 # ----------------------------------------------------------------------
 # 2. Artifacts del Sistema Operativo e IDE
