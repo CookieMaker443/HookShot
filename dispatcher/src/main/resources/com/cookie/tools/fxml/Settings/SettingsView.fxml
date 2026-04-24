@@ -1,25 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
 
-<VBox spacing="20" alignment="CENTER" 
-      xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.cookie.tools.controllers.Settings.SettingsController"
-      style="-fx-padding: 20;">
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Spinner?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox alignment="CENTER" spacing="20" style="-fx-padding: 20;" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/24.0.1" fx:controller="com.cookie.tools.controllers.Settings.SettingsController">
 
     <!-- Lingua -->
-    <HBox spacing="10" alignment="CENTER_LEFT">
-        <Label text="%settings.language"/>
-        <ChoiceBox fx:id="languageChoiceBox"/>
+    <HBox alignment="CENTER" spacing="10">
+        <Label text="%settings.language" />
+        <ChoiceBox fx:id="languageChoiceBox" />
     </HBox>
 
     <!-- Max richieste parallele -->
-    <HBox spacing="10" alignment="CENTER_LEFT">
-        <Label text="%settings.maxRequests"/>
-        <Spinner fx:id="maxRequestsSpinner" min="1" max="10" initialValue="3" prefWidth="80"/>
+    <HBox alignment="CENTER" spacing="10">
+        <Label text="%settings.maxRequests" />
+        <Spinner fx:id="maxRequestsSpinner" initialValue="3" max="10" min="1" prefWidth="80" />
     </HBox>
 
     <!-- Salva -->
-    <Button text="%settings.save" onAction="#onSaveClick"/>
+    <Button onAction="#onSaveClick" text="%settings.save" />
 
 </VBox>

@@ -63,7 +63,7 @@
       </GridPane>
       <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.rowIndex="1">
          <children>
-            <Button fx:id="settingsButton" layoutX="402.0" layoutY="23.0" mnemonicParsing="false" onAction="#onSettingsClick" text="%button.reset" textAlignment="CENTER" />
+            <Button fx:id="settingsButton" layoutX="402.0" layoutY="23.0" mnemonicParsing="false" onAction="#onSettingsClick" text="%button.settings" textAlignment="CENTER" />
             <Button fx:id="resetButton" mnemonicParsing="false" onAction="#onResetClick" text="%button.reset" textAlignment="CENTER" />
             <Button fx:id="addHeaderButton" mnemonicParsing="false" onAction="#onAddHeaderClick" text="%button.addHeader" textAlignment="CENTER" />
             <Button fx:id="openFileButton" mnemonicParsing="false" onAction="#onOpenFileClick" text="%button.openFile" textAlignment="CENTER" />
