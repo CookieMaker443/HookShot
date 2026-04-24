@@ -20,7 +20,7 @@ public class SceneManager {
     private static SceneManager istance;
     private Map<String, String> FXML_SCENES = new HashMap<>();
     Locale locale = Locale.forLanguageTag("it-IT");
-    ResourceBundle langBundle = ResourceBundle.getBundle("i18n.language", locale);
+    ResourceBundle langBundle = ResourceBundle.getBundle("com.cookie.tools.i18n.language", locale);
     ResourceBundle sceneBundle;
     FXMLLoader loader;
 
@@ -50,7 +50,7 @@ public class SceneManager {
     }
 
     private void InitializeSceneFile() {
-        sceneBundle = ResourceBundle.getBundle("scenes.scenes");
+        sceneBundle = ResourceBundle.getBundle("com.cookie.tools.scenes.scenes");
         for (String key : sceneBundle.keySet()) {
             FXML_SCENES.put(key, sceneBundle.getString(key));
         }
