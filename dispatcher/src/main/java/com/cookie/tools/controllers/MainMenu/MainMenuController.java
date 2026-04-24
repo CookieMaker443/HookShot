@@ -54,7 +54,17 @@ public class MainMenuController {
     @FXML
     private TextArea responseArea;
 
-    
+    @FXML
+    private void initialize() {
+        for (HttpMethod m : HttpMethod.values()) {
+            methodChoiceBox.getItems().add(m.name()); // aggiunge "GET", "POST", ecc.
+        }
+        methodChoiceBox.setValue(HttpMethod.GET.name()); // valore di default
+    }
+
+    private String getMethod() {
+        return methodChoiceBox.getValue(); // ritorna la stringa "GET", "POST", ecc.
+    }
     // aggiunge righe di header dinamicamente al click del pulsante "Aggiungi Header"
     @FXML
     private void onAddHeaderClick(ActionEvent event) {
@@ -134,7 +144,7 @@ public class MainMenuController {
     private void onSendRequestClick(ActionEvent event) {
         String url = getTargetUrl();
         // String method = methodChoiceBox.getValue();
-        String method = "POST";
+        String method = getMethod();
         String rawHeaders = getFormattedHeaders();
         String body = ""; // Implementa la logica per recuperare il corpo della richiesta se necessario
     
@@ -165,7 +175,11 @@ public class MainMenuController {
             }
 
             // 4. Imposta il metodo (GET, POST, ecc.)
-            requestBuilder.method(method, HttpRequest.BodyPublishers.noBody());
+            HttpRequest.BodyPublisher publisher = (method.equals("GET") || method.equals("DELETE"))
+                ? HttpRequest.BodyPublishers.noBody()
+                : HttpRequest.BodyPublishers.ofString(body);
+
+            requestBuilder.method(method, publisher);
 
             // 5. Invia la richiesta
             HttpRequest request = requestBuilder.build();
