@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="20" alignment="CENTER" 
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.cookie.tools.controllers.Settings.SettingsController"
+      style="-fx-padding: 20;">
+
+    <!-- Lingua -->
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Label text="%settings.language"/>
+        <ChoiceBox fx:id="languageChoiceBox"/>
+    </HBox>
+
+    <!-- Max richieste parallele -->
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Label text="%settings.maxRequests"/>
+        <Spinner fx:id="maxRequestsSpinner" min="1" max="10" initialValue="3" prefWidth="80"/>
+    </HBox>
+
+    <!-- Salva -->
+    <Button text="%settings.save" onAction="#onSaveClick"/>
+
+</VBox>

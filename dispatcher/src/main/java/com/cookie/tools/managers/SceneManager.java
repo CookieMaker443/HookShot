@@ -25,7 +25,8 @@ public class SceneManager {
     FXMLLoader loader;
 
     public enum SceneKeys {
-        MAIN_MENU_VIEW("MainMenuView");
+        MAIN_MENU_VIEW("MainMenuView"),
+        SETTINGS_VIEW("SettingsView");
 
         private final String key;
 
