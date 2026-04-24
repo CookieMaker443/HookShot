@@ -2,8 +2,8 @@
 # 1. Maven Build Artifacts (Devono essere ignorati ovunque)
 # ----------------------------------------------------------------------
 # Ignora la cartella di output di Maven
-target/
-dispatcher/target/
+target/*
+dispatcher/target/*
 
 # Ignora i log e i report di test di Maven
 target/surefire-reports/*
