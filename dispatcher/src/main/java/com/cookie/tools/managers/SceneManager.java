@@ -2,7 +2,6 @@ package com.cookie.tools.managers;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 
@@ -19,8 +18,6 @@ import javafx.stage.Stage;
 public class SceneManager {
     private static SceneManager istance;
     private Map<String, String> FXML_SCENES = new HashMap<>();
-    Locale locale = Locale.forLanguageTag("it-IT");
-    ResourceBundle langBundle = ResourceBundle.getBundle("com.cookie.tools.i18n.language", locale);
     ResourceBundle sceneBundle;
     FXMLLoader loader;
 
@@ -61,7 +58,7 @@ public class SceneManager {
     public void loadScene(Stage stage, SceneKeys sceneKey, String title, double minWidth, double minHeight) {
         try {
             // prende la scena passarta come parametro e la carica
-            loader = new FXMLLoader(getClass().getResource(FXML_SCENES.get(sceneKey.getKey())), langBundle);
+            loader = new FXMLLoader(getClass().getResource(FXML_SCENES.get(sceneKey.getKey())), LanguageManager.getInstance().getBundle());
             
             // Carica il file FXML
             Parent root = loader.load();
@@ -87,10 +84,14 @@ public class SceneManager {
         }
     }
 
+    public void reloadCurrentScene(Stage stage, SceneKeys sceneKey, String title, double minWidth, double minHeight) {
+        loadScene(stage, sceneKey, title, minWidth, minHeight);
+    }
+
     public void loadPopupScene(ActionEvent event, SceneKeys sceneKey, String title, double minWidth, double minHeight) {
         try {
             // prende la scena passarta come parametro e la carica
-            loader = new FXMLLoader(getClass().getResource(FXML_SCENES.get(sceneKey.getKey())), langBundle);
+            loader = new FXMLLoader(getClass().getResource(FXML_SCENES.get(sceneKey.getKey())), LanguageManager.getInstance().getBundle());
             
             // Carica il file FXML
             Parent root = loader.load();

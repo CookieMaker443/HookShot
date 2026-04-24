@@ -7,7 +7,13 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
+import com.cookie.tools.managers.LanguageManager;
 import com.cookie.tools.managers.SceneManager;
 import com.cookie.tools.managers.SettingsManager;
 
@@ -142,56 +148,148 @@ public class MainMenuController {
         // String method = methodChoiceBox.getValue();
         String method = getMethod();
         String rawHeaders = getFormattedHeaders();
-        String body = ""; // Implementa la logica per recuperare il corpo della richiesta se necessario
+        String rawBody = ""; // Implementa la logica per recuperare il corpo della richiesta se necessario
     
         if (url.isEmpty() || !isValidUrl(url)) {
-            // mostra errore in UI
+            appendLog("URL non valido: " + url);
             return;
         }
 
+        SettingsManager.getInstance().setLastUrl(url);
+
+        
+        // --- SPLIT DEI BODY ---
+        // il testo nella bodyArea può contenere più body separati da una riga vuota, esempio:
+        //
+        //   {"nome": "Mario"}
+        //
+        //   {"nome": "Luigi"}
+        //
+        // split("\n\n") li separa in una lista di stringhe
+        // .map(String::trim)      → rimuove spazi e a capo in eccesso da ciascun body
+        // .filter(b -> !b.isEmpty()) → scarta eventuali body vuoti (es. doppio a capo finale)
+        List<String> bodies = Arrays.stream(rawBody.split("\n\n"))
+            .map(String::trim)
+            .filter(b -> !b.isEmpty())
+            .collect(Collectors.toList());
+
+        // se non c'è nessun body (es. richiesta GET), aggiungiamo una stringa vuota
+        // così il resto del codice funziona sempre allo stesso modo
+        if (bodies.isEmpty()) bodies.add("");
+
+        // legge il numero massimo di richieste parallele dalle settings
+        int maxParallel = SettingsManager.getInstance().getMaxParallelRequests();
+
+        // avvia il sistema di batch
+        sendInBatches(url, method, rawHeaders, bodies, maxParallel);
+    }
+
+    private void sendInBatches(String url, String method, String rawHeaders,
+                            List<String> bodies, int maxParallel) {
+
+        // --- PARTIZIONAMENTO IN BATCH ---
+        // esempio: bodies = [b1, b2, b3, b4, b5], maxParallel = 2
+        // risultato: batches = [[b1, b2], [b3, b4], [b5]]
+        List<List<String>> batches = new ArrayList<>();
+        for (int i = 0; i < bodies.size(); i += maxParallel) {
+            // Math.min evita di sforare la fine della lista nell'ultimo batch
+            batches.add(bodies.subList(i, Math.min(i + maxParallel, bodies.size())));
+        }
+
+        // --- CATENA DI COMPLETABLEFUTURE ---
+        // CompletableFuture rappresenta un'operazione asincrona che verrà completata in futuro.
+        // Partiamo da un future già completato come "punto zero" della catena.
+        CompletableFuture<Void> chain = CompletableFuture.completedFuture(null);
+
+        for (int batchIndex = 0; batchIndex < batches.size(); batchIndex++) {
+            List<String> batch = batches.get(batchIndex);
+            int batchNum = batchIndex + 1; // numero leggibile per il log (parte da 1)
+
+            // thenCompose = "quando il future precedente è completato, esegui questo blocco"
+            // garantisce che i batch vengano eseguiti IN SEQUENZA uno dopo l'altro
+            chain = chain.thenCompose(ignored -> {
+                // "ignored" è il risultato del future precedente: non ci interessa (è Void)
+
+                appendLog("📦 Batch " + batchNum + "/" + batches.size()
+                        + " — " + batch.size() + " richieste in partenza...");
+
+                // --- RICHIESTE PARALLELE DENTRO IL BATCH ---
+                // per ogni body del batch creiamo un CompletableFuture indipendente
+                // tutti partono contemporaneamente (in parallelo)
+                List<CompletableFuture<Void>> futures = new ArrayList<>();
+                for (int i = 0; i < batch.size(); i++) {
+                    String body = batch.get(i);
+
+                    // bodyIndex = posizione globale del body (es. body 3 di 5 totali)
+                    // bodies.indexOf(body) trova la posizione nella lista originale completa
+                    int bodyIndex = bodies.indexOf(body) + 1; // +1 per partire da 1
+
+                    futures.add(sendSingleRequest(url, method, rawHeaders, body, bodyIndex, bodies.size()));
+                }
+
+                // allOf = crea un future che si completa solo quando TUTTI i future nella lista
+                // sono completati. È il meccanismo che fa aspettare la fine del batch corrente
+                // prima di passare al thenCompose successivo (batch successivo).
+                return CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]));
+            });
+        }
+
+        // gestione errori sull'intera catena
+        chain.exceptionally(ex -> {
+            appendLog("Errore durante i batch: " + ex.getMessage());
+            return null;
+        });
+    }
+
+    private CompletableFuture<Void> sendSingleRequest(String url, String method,
+                                                   String rawHeaders, String body,
+                                                   int bodyIndex, int total) {
         try {
-            
-            // 2. Inizia a costruire la richiesta
+            // --- COSTRUZIONE DELLA REQUEST ---
             HttpRequest.Builder requestBuilder = HttpRequest.newBuilder()
                     .uri(URI.create(url));
 
-            // 3. Applica gli header dinamicamente
+            // applica gli header dinamici se presenti
             if (!rawHeaders.isEmpty()) {
-                String[] lines = rawHeaders.split("\n");
-                for (String line : lines) {
-                    // Dividiamo alla prima occorrenza di ":"
+                for (String line : rawHeaders.split("\n")) {
                     String[] parts = line.split(" : ", 2);
                     if (parts.length == 2) {
-                        // Rimuoviamo le virgolette che hai aggiunto nel metodo getFormattedHeaders
-                        String key = parts[0].trim();
-                        String value = parts[1].trim();
-                        requestBuilder.header(key, value);
+                        requestBuilder.header(parts[0].trim(), parts[1].trim());
                     }
                 }
             }
 
-            // 4. Imposta il metodo (GET, POST, ecc.)
+            // GET e DELETE non possono avere un body per specifica HTTP
+            // tutti gli altri metodi (POST, PUT, PATCH) mandano il body come stringa
             HttpRequest.BodyPublisher publisher = (method.equals("GET") || method.equals("DELETE"))
                 ? HttpRequest.BodyPublishers.noBody()
                 : HttpRequest.BodyPublishers.ofString(body);
 
             requestBuilder.method(method, publisher);
-
-            // 5. Invia la richiesta
             HttpRequest request = requestBuilder.build();
-            client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
-            .thenAccept(response -> {
-                Platform.runLater(() -> {
-                    appendLog(response);
+
+            // --- INVIO ASINCRONO ---
+            // sendAsync non blocca il thread UI: la richiesta parte in background
+            // e thenAccept viene chiamato quando la risposta arriva
+            return client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+                .thenAccept(response -> {
+                    // siamo su un thread separato (non il thread JavaFX)
+                    // Platform.runLater è OBBLIGATORIO per toccare i componenti UI
+                    // senza di esso JavaFX lancia un'eccezione
+                    Platform.runLater(() -> {
+                        logArea.appendText("=== [" + bodyIndex + "/" + total + "] RISPOSTA ===\n");
+                        logArea.appendText("Body inviato: " + (body.isEmpty() ? "(vuoto)" : body) + "\n");
+                        logArea.appendText("Status: " + response.statusCode() + "\n");
+                        logArea.appendText("Body risposta:\n" + response.body() + "\n");
+                        logArea.appendText("================\n\n");
+                    });
                 });
-            })
-            .exceptionally(ex -> {
-                Platform.runLater(() -> logArea.appendText("❌ Errore: " + ex.getMessage() + "\n"));
-                return null;
-            });
 
         } catch (Exception e) {
-            // e.printStackTrace();
+            // se la costruzione della request fallisce (es. URL malformato)
+            // logghiamo e ritorniamo un future già completato per non bloccare la catena
+            appendLog("❌ Errore costruzione richiesta [" + bodyIndex + "]: " + e.getMessage());
+            return CompletableFuture.completedFuture(null);
         }
     }
 
@@ -217,7 +315,7 @@ public class MainMenuController {
         SceneManager.getInstance().loadPopupScene(
             event,
             SceneManager.SceneKeys.SETTINGS_VIEW,
-            "Settings",
+            LanguageManager.getInstance().getBundle().getString("settings.title"),
             350, 200
         );
     }

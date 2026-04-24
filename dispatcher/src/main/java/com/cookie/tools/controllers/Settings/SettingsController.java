@@ -1,5 +1,7 @@
 package com.cookie.tools.controllers.Settings;
 
+import com.cookie.tools.managers.LanguageManager;
+import com.cookie.tools.managers.SceneManager;
 import com.cookie.tools.managers.SettingsManager;
 
 import javafx.fxml.FXML;
@@ -23,11 +25,27 @@ public class SettingsController {
 
     @FXML
     private void onSaveClick() {
-        SettingsManager.getInstance().setLanguage(languageChoiceBox.getValue());
+        String selectedLang = languageChoiceBox.getValue();
+
+        // salva nei settings
+        SettingsManager.getInstance().setLanguage(selectedLang);
         SettingsManager.getInstance().setMaxParallelRequests(maxRequestsSpinner.getValue());
 
-        // chiude il popup
-        Stage stage = (Stage) languageChoiceBox.getScene().getWindow();
-        stage.close();
+        // aggiorna il bundle
+        LanguageManager.getInstance().load(selectedLang);
+
+        // ricarica la scena principale
+        Stage popupStage = (Stage) languageChoiceBox.getScene().getWindow();
+        Stage primaryStage = (Stage) popupStage.getOwner();
+        popupStage.close();
+        int height = (int) primaryStage.getHeight();
+        int width = (int) primaryStage.getWidth(); 
+
+        SceneManager.getInstance().reloadCurrentScene(
+            primaryStage,
+            SceneManager.SceneKeys.MAIN_MENU_VIEW,
+            LanguageManager.getInstance().getBundle().getString("settings.title"),
+            1500, 750
+        );
     }
 }
