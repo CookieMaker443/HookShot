@@ -1,0 +1,44 @@
+# ----------------------------------------------------------------------
+# 1. Maven Build Artifacts (Devono essere ignorati ovunque)
+# ----------------------------------------------------------------------
+# Ignora la cartella di output di Maven
+target/
+
+# Ignora i log e i report di test di Maven
+target/surefire-reports/*
+target/failsafe-reports/*
+test-output/
+
+# ----------------------------------------------------------------------
+# 2. Artifacts del Sistema Operativo e IDE
+# ----------------------------------------------------------------------
+# macOS
+.DS_Store
+
+# File di configurazione di IDE comuni (IntelliJ IDEA)
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# File di configurazione di VS Code
+.vscode/
+
+
+# ----------------------------------------------------------------------
+# 3. File Java Specifici
+# ----------------------------------------------------------------------
+# File di classe compilati
+*.class
+
+# File di output della JVM
+*.log
+hs_err_pid*
+
+# ----------------------------------------------------------------------
+# 4. File Utili per Maven (se generati fuori da target/)
+# ----------------------------------------------------------------------
+# Quando esegui mvn clean install, a volte crea questi in locale
+dependency-reduced-pom.xml
+
+.env
