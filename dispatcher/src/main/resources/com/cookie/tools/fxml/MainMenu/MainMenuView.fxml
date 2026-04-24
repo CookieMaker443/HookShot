@@ -49,7 +49,7 @@
               </rowConstraints>
                <children>
                   <Text scaleX="2.0" scaleY="2.0" strokeType="OUTSIDE" strokeWidth="0.0" text="%text.link" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-                  <Button fx:id="sendRequestButton" mnemonicParsing="false" scaleX="1.5" text="%button.send" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                  <Button fx:id="sendRequestButton" mnemonicParsing="false" onAction="#onSendRequestClick" scaleX="1.5" text="%button.send" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
                </children>
             </GridPane>
          </children>

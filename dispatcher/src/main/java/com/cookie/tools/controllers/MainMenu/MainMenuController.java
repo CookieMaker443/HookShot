@@ -1,11 +1,18 @@
 package com.cookie.tools.controllers.MainMenu;
 
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -35,6 +42,19 @@ public class MainMenuController {
     @FXML
     private VBox headersContainer; // Collegalo a un VBox nel tuo FXML
 
+    // --- HTTP CLIENT ---
+    private HttpClient client = HttpClient.newHttpClient();
+
+    // --- TEXT AREA ---
+    @FXML
+    private TextArea logArea; 
+    @FXML
+    private TextArea bodyArea; 
+    @FXML
+    private TextArea responseArea;
+
+    
+    // aggiunge righe di header dinamicamente al click del pulsante "Aggiungi Header"
     @FXML
     private void onAddHeaderClick(ActionEvent event) {
         // Crea il contenitore orizzontale per la singola riga
@@ -63,5 +83,99 @@ public class MainMenuController {
 
         // Aggiunge la riga al VBox principale
         headersContainer.getChildren().add(riga);
+    }
+
+    // legge il valore delle righe degli header
+    private String getFormattedHeaders() {
+        StringBuilder sb = new StringBuilder();
+
+        for (Node node : headersContainer.getChildren()) {
+            // Verifichiamo che il nodo sia effettivamente una riga HBox
+            if (node instanceof HBox riga) {
+                // Estraiamo i TextField (sappiamo che sono in posizione 0 e 1)
+                TextField keyField = (TextField) riga.getChildren().get(0);
+                TextField valueField = (TextField) riga.getChildren().get(1);
+
+                String chiave = keyField.getText().trim();
+                String valore = valueField.getText().trim();
+
+                // Aggiungiamo solo se la chiave non è vuota
+                if (!chiave.isEmpty()) {
+                    sb.append(chiave)
+                    .append(" : ")
+                    .append(valore)
+                    .append("\n");
+                }
+            }
+        }
+        //logArea.appendText("Headers formattati:\n" + sb);
+        return sb.toString();
+    }
+
+    // Recupera l'URL dal campo di testo
+    private String getTargetUrl() {
+        return urlField.getText().trim();
+    }
+
+    // valida l url inserita dall'utente
+    private boolean isValidUrl(String url) {
+        try {
+            URI uri = URI.create(url);
+            return uri.getScheme() != null && 
+                (uri.getScheme().equals("http") || uri.getScheme().equals("https"));
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
+    }
+
+    // Invia la richiesta al click del pulsante "Invia"
+    @FXML
+    private void onSendRequestClick(ActionEvent event) {
+        String url = getTargetUrl();
+        // String method = methodChoiceBox.getValue();
+        String method = "POST";
+        String rawHeaders = getFormattedHeaders();
+        String body = ""; // Implementa la logica per recuperare il corpo della richiesta se necessario
+    
+        if (url.isEmpty() || !isValidUrl(url)) {
+            // mostra errore in UI
+            return;
+        }
+
+        try {
+            
+            // 2. Inizia a costruire la richiesta
+            HttpRequest.Builder requestBuilder = HttpRequest.newBuilder()
+                    .uri(URI.create(url));
+
+            // 3. Applica gli header dinamicamente
+            if (!rawHeaders.isEmpty()) {
+                String[] lines = rawHeaders.split("\n");
+                for (String line : lines) {
+                    // Dividiamo alla prima occorrenza di ":"
+                    String[] parts = line.split(" : ", 2);
+                    if (parts.length == 2) {
+                        // Rimuoviamo le virgolette che hai aggiunto nel metodo getFormattedHeaders
+                        String key = parts[0].trim();
+                        String value = parts[1].trim();
+                        requestBuilder.header(key, value);
+                    }
+                }
+            }
+
+            // 4. Imposta il metodo (GET, POST, ecc.)
+            requestBuilder.method(method, HttpRequest.BodyPublishers.noBody());
+
+            // 5. Invia la richiesta
+            HttpRequest request = requestBuilder.build();
+            client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+                .thenAccept(response -> {
+                    System.out.println("Risposta: " + response.body());
+                    System.out.println("Codice: " + response.statusCode());
+                });
+
+        } catch (Exception e) {
+            // e.printStackTrace();
+        }
     }
 }
