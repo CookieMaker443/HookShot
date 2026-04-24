@@ -27,8 +27,8 @@ public class App extends Application {
         stage.setScene(scene);
         stage.show();
         */
-        final double MIN_WIDTH = 750;
-        final double MIN_HEIGHT = 500;
+        final double MIN_WIDTH = 1500;
+        final double MIN_HEIGHT = 750;
 
         // LanguageManager.getInstance();               // Inizializza il LanguageManager
         // Inizializza lo SceneManager

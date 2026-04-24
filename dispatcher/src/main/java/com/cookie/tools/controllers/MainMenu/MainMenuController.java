@@ -5,6 +5,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -169,13 +170,27 @@ public class MainMenuController {
             // 5. Invia la richiesta
             HttpRequest request = requestBuilder.build();
             client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
-                .thenAccept(response -> {
-                    System.out.println("Risposta: " + response.body());
-                    System.out.println("Codice: " + response.statusCode());
+            .thenAccept(response -> {
+                Platform.runLater(() -> {
+                    appendLog(response);
                 });
+            })
+            .exceptionally(ex -> {
+                Platform.runLater(() -> logArea.appendText("❌ Errore: " + ex.getMessage() + "\n"));
+                return null;
+            });
 
         } catch (Exception e) {
             // e.printStackTrace();
         }
+    }
+
+    private void appendLog(HttpResponse<String> response) {
+        Platform.runLater(() -> {
+            logArea.appendText("=== RISPOSTA ===\n");
+            logArea.appendText("Status: " + response.statusCode() + "\n");
+            logArea.appendText("Body:\n" + response.body() + "\n");
+            logArea.appendText("================\n\n");
+        });
     }
 }
