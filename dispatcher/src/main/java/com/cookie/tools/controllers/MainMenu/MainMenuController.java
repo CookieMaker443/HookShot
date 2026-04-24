@@ -8,6 +8,9 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.file.Files;
 
+import com.cookie.tools.managers.SceneManager;
+import com.cookie.tools.managers.SettingsManager;
+
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -27,15 +30,19 @@ public class MainMenuController {
 
     // --- PULSANTI ---
     @FXML
-    private Button addHeaderButton; // Collegalo a un Button nel tuo FXML
+    private Button sendRequestButton;
+    @FXML
+    private Button settingsButton;
     @FXML
     private Button resetButton;
     @FXML
+    private Button addHeaderButton; // Collegalo a un Button nel tuo FXML
+    @FXML
     private Button openFileButton;
     @FXML
-    private Button openBodyButton;
+    private Button clearLogsButton;
     @FXML
-    private Button sendRequestButton;
+    private Button clearBodyButton;
 
     // --- SELETTORI ---
     @FXML
@@ -64,6 +71,7 @@ public class MainMenuController {
             methodChoiceBox.getItems().add(m.name()); // aggiunge "GET", "POST", ecc.
         }
         methodChoiceBox.setValue(HttpMethod.GET.name()); // valore di default
+        urlField.setText(SettingsManager.getInstance().getLastUrl());
     }
 
     private String getMethod() {
@@ -202,6 +210,16 @@ public class MainMenuController {
                 appendLog("Errore lettura file: " + e.getMessage());
             }
         }
+    }
+
+    @FXML
+    private void onSettingsClick(ActionEvent event) {
+        SceneManager.getInstance().loadPopupScene(
+            event,
+            SceneManager.SceneKeys.SETTINGS_VIEW,
+            "Settings",
+            350, 200
+        );
     }
 
     @FXML
