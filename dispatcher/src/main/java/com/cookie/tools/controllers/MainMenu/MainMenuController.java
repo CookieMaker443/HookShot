@@ -1,9 +1,12 @@
 package com.cookie.tools.controllers.MainMenu;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.file.Files;
 
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -18,6 +21,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
 
 public class MainMenuController {
 
@@ -123,22 +127,6 @@ public class MainMenuController {
         return sb.toString();
     }
 
-    // Recupera l'URL dal campo di testo
-    private String getTargetUrl() {
-        return urlField.getText().trim();
-    }
-
-    // valida l url inserita dall'utente
-    private boolean isValidUrl(String url) {
-        try {
-            URI uri = URI.create(url);
-            return uri.getScheme() != null && 
-                (uri.getScheme().equals("http") || uri.getScheme().equals("https"));
-        } catch (IllegalArgumentException e) {
-            return false;
-        }
-    }
-
     // Invia la richiesta al click del pulsante "Invia"
     @FXML
     private void onSendRequestClick(ActionEvent event) {
@@ -199,6 +187,42 @@ public class MainMenuController {
         }
     }
 
+    @FXML
+    private void onOpenFileClick(ActionEvent event) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().add(
+            new FileChooser.ExtensionFilter("File di testo", "*.txt", "*.md")
+        );
+        File file = fileChooser.showOpenDialog(openFileButton.getScene().getWindow());
+        if (file != null) {
+            try {
+                String content = Files.readString(file.toPath());
+                bodyArea.setText(content);
+            } catch (IOException e) {
+                appendLog("Errore lettura file: " + e.getMessage());
+            }
+        }
+    }
+
+    @FXML
+    private void onResetClick(ActionEvent event) {
+        resetAll();
+    }
+
+    @FXML
+    private void onClearLogsClick(ActionEvent event) {
+        clearLog();
+    }
+
+    @FXML
+    private void onClearBodyClick(ActionEvent event) {
+        clearBody();
+    }
+
+    private void appendLog(String message) {
+        Platform.runLater(() -> logArea.appendText(message + "\n"));
+    }
+
     private void appendLog(HttpResponse<String> response) {
         Platform.runLater(() -> {
             logArea.appendText("=== RISPOSTA ===\n");
@@ -206,5 +230,45 @@ public class MainMenuController {
             logArea.appendText("Body:\n" + response.body() + "\n");
             logArea.appendText("================\n\n");
         });
+    }
+
+    private void resetAll() {
+        clearLog();
+        clearBody();
+        clearUrl();
+        clearHeaders();
+        methodChoiceBox.setValue(HttpMethod.GET.name()); // riporta al default
+    }
+
+    private void clearLog() {
+        logArea.clear();
+    }
+
+    private void clearBody() {
+        bodyArea.clear();
+    }
+
+    private void clearUrl() {
+        urlField.clear();
+    }
+
+    private void clearHeaders() {
+        headersContainer.getChildren().clear();
+    }
+
+    // Recupera l'URL dal campo di testo
+    private String getTargetUrl() {
+        return urlField.getText().trim();
+    }
+
+    // valida l url inserita dall'utente
+    private boolean isValidUrl(String url) {
+        try {
+            URI uri = URI.create(url);
+            return uri.getScheme() != null && 
+                (uri.getScheme().equals("http") || uri.getScheme().equals("https"));
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
     }
 }
