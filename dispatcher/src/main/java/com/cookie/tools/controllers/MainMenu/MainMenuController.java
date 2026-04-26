@@ -16,6 +16,8 @@ import java.util.stream.Collectors;
 import com.cookie.tools.managers.LanguageManager;
 import com.cookie.tools.managers.SceneManager;
 import com.cookie.tools.managers.SettingsManager;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -62,6 +64,10 @@ public class MainMenuController {
 
     // --- HTTP CLIENT ---
     private HttpClient client = HttpClient.newHttpClient();
+
+    // --- JSON PRETTY PRINT (opzionale, per loggare i body in modo leggibile) ---
+
+    private final ObjectMapper objectMapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
 
     // --- TEXT AREA ---
     @FXML
@@ -148,8 +154,8 @@ public class MainMenuController {
         // String method = methodChoiceBox.getValue();
         String method = getMethod();
         String rawHeaders = getFormattedHeaders();
-        String rawBody = ""; // Implementa la logica per recuperare il corpo della richiesta se necessario
-    
+        String rawBody = bodyArea.getText(); // Implementa la logica per recuperare il corpo della richiesta se necessario
+
         if (url.isEmpty() || !isValidUrl(url)) {
             appendLog("URL non valido: " + url);
             return;
@@ -280,7 +286,7 @@ public class MainMenuController {
                         logArea.appendText("=== [" + bodyIndex + "/" + total + "] RISPOSTA ===\n");
                         logArea.appendText("Body inviato: " + (body.isEmpty() ? "(vuoto)" : body) + "\n");
                         logArea.appendText("Status: " + response.statusCode() + "\n");
-                        logArea.appendText("Body risposta:\n" + response.body() + "\n");
+                        logArea.appendText("Body risposta:\n" + prettyPrintJson(response.body()) + "\n");
                         logArea.appendText("================\n\n");
                     });
                 });
@@ -290,6 +296,15 @@ public class MainMenuController {
             // logghiamo e ritorniamo un future già completato per non bloccare la catena
             appendLog("❌ Errore costruzione richiesta [" + bodyIndex + "]: " + e.getMessage());
             return CompletableFuture.completedFuture(null);
+        }
+    }
+
+    private String prettyPrintJson(String raw) {
+        try {
+            Object json = objectMapper.readValue(raw, Object.class);
+            return objectMapper.writeValueAsString(json);
+        } catch (Exception e) {
+            return raw; // non è JSON, restituisce il body originale
         }
     }
 
