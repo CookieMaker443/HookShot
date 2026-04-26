@@ -118,17 +118,11 @@ public class MainMenuController {
         riga.setPadding(new Insets(5));
 
         TextField keyField = new TextField(key);
-        keyField.setPromptText(LanguageManager
-                        .getInstance()
-                        .getBundle()
-                        .getString("header.key"));
+        keyField.setPromptText(t("header.key"));
         keyField.setPrefWidth(150);
 
         TextField valueField = new TextField(value);
-        valueField.setPromptText(LanguageManager
-                        .getInstance()
-                        .getBundle()
-                        .getString("header.value"));
+        valueField.setPromptText(t("header.value"));
         HBox.setHgrow(valueField, Priority.ALWAYS);
 
         Button removeBtn = new Button("X");
@@ -152,23 +146,14 @@ public class MainMenuController {
         try {
             List<String> headers = FileManager.getInstance().listHeaders();
             if (headers.isEmpty()) {
-                appendLog(LanguageManager
-                    .getInstance()
-                    .getBundle()
-                    .getString("header.noHeadersSaved"));
+                appendLog(t("header.noHeadersSaved"));
                 return;
             }
 
             ChoiceDialog<String> dialog = new ChoiceDialog<>(headers.get(0), headers);
-            dialog.setTitle(LanguageManager
-                            .getInstance()
-                            .getBundle()
-                            .getString("gui_title.template"));
+            dialog.setTitle(t("gui_title.template"));
             dialog.setHeaderText(null);
-            dialog.setContentText(LanguageManager
-                            .getInstance()
-                            .getBundle()
-                            .getString("header.loadHeader"));
+            dialog.setContentText(t("header.loadHeader"));
 
             dialog.showAndWait().ifPresent(name -> {
                 try {
@@ -186,22 +171,13 @@ public class MainMenuController {
                         }
                     }
 
-                    appendLog(LanguageManager
-                                .getInstance()
-                                .getBundle()
-                                .getString("header.loadedHeader") + ": " + name);
+                    appendLog(t("header.loadedHeader") + ": " + name);
                 } catch (IOException e) {
-                    appendLog(LanguageManager
-                                .getInstance()
-                                .getBundle()
-                                .getString("header.errorLoadHeader") + ": " + e.getMessage());
+                    appendLog(t("header.errorLoadHeader") + ": " + e.getMessage());
                 }
             });
         } catch (IOException e) {
-            appendLog(LanguageManager
-                        .getInstance()
-                        .getBundle()
-                        .getString("header.errorLoadHeader") + ": " + e.getMessage());
+            appendLog(t("header.errorLoadHeader") + ": " + e.getMessage());
         }
     }
 
@@ -209,15 +185,9 @@ public class MainMenuController {
     @FXML
     private void onSaveHeadersClick(ActionEvent event) {
         TextInputDialog dialog = new TextInputDialog();
-        dialog.setTitle(LanguageManager
-                        .getInstance()
-                        .getBundle()
-                        .getString("header.saveHeader"));
+        dialog.setTitle(t("header.saveHeader"));
         dialog.setHeaderText(null);
-        dialog.setContentText(LanguageManager
-                        .getInstance()
-                        .getBundle()
-                        .getString("save_name.prompt"));
+        dialog.setContentText(t("save_name.prompt"));
 
         dialog.showAndWait().ifPresent(name -> {
             try {
@@ -226,22 +196,13 @@ public class MainMenuController {
                     getFormattedHeaders()
                 );
                 if (saved) {
-                    appendLog(LanguageManager
-                                    .getInstance()
-                                    .getBundle()
-                                    .getString("header.headerSavedSuccessfully") + " " + (name.isBlank() ? 
-                                                            LanguageManager.getInstance().getBundle().getString("auto") : name));
+                    appendLog(t("header.headerSavedSuccessfully") + " " + (name.isBlank() ? 
+                                                            t("auto") : name));
                 } else {
-                    appendLog(LanguageManager
-                                    .getInstance()
-                                    .getBundle()
-                                    .getString("header.nameAlreadyExists"));
+                    appendLog(t("header.nameAlreadyExists"));
                 }
             } catch (IOException e) {
-                appendLog(LanguageManager
-                            .getInstance()
-                            .getBundle()
-                            .getString("header.errorSaveHeader") + ": " + e.getMessage());
+                appendLog(t("header.errorSaveHeader") + ": " + e.getMessage());
             }
         });
     }
@@ -279,44 +240,26 @@ public class MainMenuController {
         try {
             List<String> urls = FileManager.getInstance().listUrls();
             if (urls.isEmpty()) {
-                appendLog(LanguageManager
-                            .getInstance()
-                            .getBundle()
-                            .getString("url.noURLSaved"));
+                appendLog(t("url.noURLSaved"));
                 return;
             }
 
             ChoiceDialog<String> dialog = new ChoiceDialog<>(urls.get(0), urls);
-            dialog.setTitle(LanguageManager
-                            .getInstance()
-                            .getBundle()
-                            .getString("url.loadURL"));
+            dialog.setTitle(t("url.loadURL"));
             dialog.setHeaderText(null);
-            dialog.setContentText(LanguageManager
-                                    .getInstance()
-                                    .getBundle()
-                                    .getString("url.chooseUrl"));
+            dialog.setContentText(t("url.chooseUrl"));
 
             dialog.showAndWait().ifPresent(name -> {
                 try {
                     String url = FileManager.getInstance().loadUrl(name);
                     urlField.setText(url);
-                    appendLog(LanguageManager
-                                .getInstance()
-                                .getBundle()
-                                .getString("url.loadedURL") + " " + name + " → " + url);
+                    appendLog(t("url.loadedURL") + " " + name + " → " + url);
                 } catch (IOException e) {
-                    appendLog(LanguageManager
-                                .getInstance()
-                                .getBundle()
-                                .getString("url.errorLoadURL") + ": " + e.getMessage());
+                    appendLog(t("url.errorLoadURL") + ": " + e.getMessage());
                 }
             });
         } catch (IOException e) {
-            appendLog(LanguageManager
-                        .getInstance()
-                        .getBundle()
-                        .getString("url.errorLoadURL") + ": " + e.getMessage());
+            appendLog(t("url.errorLoadURL") + ": " + e.getMessage());
         }
     }
 
@@ -324,15 +267,9 @@ public class MainMenuController {
     @FXML
     private void onSaveUrlClick(ActionEvent event) {
         TextInputDialog dialog = new TextInputDialog();
-        dialog.setTitle(LanguageManager
-                            .getInstance()
-                            .getBundle()
-                            .getString("url.saveURL"));
+        dialog.setTitle(t("url.saveURL"));
         dialog.setHeaderText(null);
-        dialog.setContentText(LanguageManager
-                                .getInstance()
-                                .getBundle()
-                                .getString("url.saveURLPrompt"));
+        dialog.setContentText(t("url.saveURLPrompt"));
 
         dialog.showAndWait().ifPresent(name -> {
             try {
@@ -341,21 +278,12 @@ public class MainMenuController {
                     getTargetUrl()
                 );
                 if (saved) {
-                    appendLog(LanguageManager
-                                .getInstance()
-                                .getBundle()
-                                .getString("url.savedURL") + " " + (name.isBlank() ? LanguageManager.getInstance().getBundle().getString("auto") : name));
+                    appendLog(t("url.savedURL") + " " + (name.isBlank() ? t("auto") : name));
                 } else {
-                    appendLog(LanguageManager
-                                .getInstance()
-                                .getBundle()
-                                .getString("url.errorSaveURL"));
+                    appendLog(t("url.errorSaveURL"));
                 }
             } catch (IOException e) {
-                appendLog(LanguageManager
-                            .getInstance()
-                            .getBundle()
-                            .getString("url.errorSaveURL") + ": " + e.getMessage());
+                appendLog(t("url.errorSaveURL") + ": " + e.getMessage());
             }
         });
     }
@@ -370,10 +298,7 @@ public class MainMenuController {
         String rawBody = bodyArea.getText(); // Implementa la logica per recuperare il corpo della richiesta se necessario
 
         if (url.isEmpty() || !isValidUrl(url)) {
-            appendLog(LanguageManager
-                        .getInstance()
-                        .getBundle()
-                        .getString("url.notValid") + ": " + url);
+            appendLog(t("url.notValid") + ": " + url);
             return;
         }
 
@@ -433,10 +358,7 @@ public class MainMenuController {
                 // "ignored" è il risultato del future precedente: non ci interessa (è Void)
 
                 appendLog("📦 Batch " + batchNum + "/" + batches.size()
-                        + " — " + batch.size() + " " + LanguageManager
-                                                        .getInstance()
-                                                        .getBundle()
-                                                        .getString("log.shippingRequest"));
+                        + " — " + batch.size() + " " + t("log.shippingRequest"));
 
                 // --- RICHIESTE PARALLELE DENTRO IL BATCH ---
                 // per ogni body del batch creiamo un CompletableFuture indipendente
@@ -461,10 +383,7 @@ public class MainMenuController {
 
         // gestione errori sull'intera catena
         chain.exceptionally(ex -> {
-            appendLog(LanguageManager
-                        .getInstance()
-                        .getBundle()
-                        .getString("batch.error") + " " + ex.getMessage());
+            appendLog(t("batch.error") + " " + ex.getMessage());
             return null;
         });
     }
@@ -505,23 +424,11 @@ public class MainMenuController {
                     // Platform.runLater è OBBLIGATORIO per toccare i componenti UI
                     // senza di esso JavaFX lancia un'eccezione
                     Platform.runLater(() -> {
-                        logArea.appendText("=== [" + bodyIndex + "/" + total + "] "+LanguageManager
-                                                                                        .getInstance()
-                                                                                        .getBundle()
-                                                                                        .getString("response.responseTitle")+" ===\n");
-                        logArea.appendText(LanguageManager
-                                                .getInstance()
-                                                .getBundle()
-                                                .getString("response.bodySent") + ": " + (body.isEmpty() ? 
-                                                        LanguageManager.getInstance().getBundle().getString("response.bodySentEmpty") : body) + "\n");
-                        logArea.appendText(LanguageManager
-                                                .getInstance()
-                                                .getBundle()
-                                                .getString("response.status") + ": " + response.statusCode() + "\n");
-                        logArea.appendText(LanguageManager
-                                                .getInstance()
-                                                .getBundle()
-                                                .getString("response.bodyReceived") + ":\n" + prettyPrintJson(response.body()) + "\n");
+                        logArea.appendText("=== [" + bodyIndex + "/" + total + "] "+ t("response.responseTitle")+" ===\n");
+                        logArea.appendText(t("response.bodySent") + ": " + (body.isEmpty() ? 
+                                                        t("response.bodySentEmpty") : body) + "\n");
+                        logArea.appendText(t("response.status") + ": " + response.statusCode() + "\n");
+                        logArea.appendText(t("response.bodyReceived") + ":\n" + prettyPrintJson(response.body()) + "\n");
                         logArea.appendText("================\n\n");
                     });
                 });
@@ -529,10 +436,7 @@ public class MainMenuController {
         } catch (Exception e) {
             // se la costruzione della request fallisce (es. URL malformato)
             // logghiamo e ritorniamo un future già completato per non bloccare la catena
-            appendLog(LanguageManager
-                            .getInstance()
-                            .getBundle()
-                            .getString("request.buildingError") + " [" + bodyIndex + "]: " + e.getMessage());
+            appendLog(t("request.buildingError") + " [" + bodyIndex + "]: " + e.getMessage());
             return CompletableFuture.completedFuture(null);
         }
     }
@@ -550,10 +454,7 @@ public class MainMenuController {
     private void onOpenFileClick(ActionEvent event) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().add(
-            new FileChooser.ExtensionFilter(LanguageManager
-                                                .getInstance()
-                                                .getBundle()
-                                                .getString("filechooser.desc"), "*.txt", "*.md")
+            new FileChooser.ExtensionFilter(t("filechooser.desc"), "*.txt", "*.md")
         );
         File file = fileChooser.showOpenDialog(openFileButton.getScene().getWindow());
         if (file != null) {
@@ -561,10 +462,7 @@ public class MainMenuController {
                 String content = Files.readString(file.toPath());
                 bodyArea.setText(content);
             } catch (IOException e) {
-                appendLog(LanguageManager
-                                .getInstance()
-                                .getBundle()
-                                .getString("filechooser.errorLoadFile") + " " + e.getMessage());
+                appendLog(t("filechooser.errorLoadFile") + " " + e.getMessage());
             }
         }
     }
@@ -573,15 +471,9 @@ public class MainMenuController {
     private void onSavePacketClick(ActionEvent event) {
         // apre un dialog per chiedere il nome
         TextInputDialog dialog = new TextInputDialog();
-        dialog.setTitle(LanguageManager
-                            .getInstance()
-                            .getBundle()
-                            .getString("packet.savePacket"));
+        dialog.setTitle(t("packet.savePacket"));
         dialog.setHeaderText(null);
-        dialog.setContentText(LanguageManager
-                                .getInstance()
-                                .getBundle()
-                                .getString("packet.savePacketPrompt"));
+        dialog.setContentText(t("packet.savePacketPrompt"));
 
         dialog.showAndWait().ifPresent(name -> {
             try {
@@ -593,24 +485,12 @@ public class MainMenuController {
                     bodyArea.getText().trim()
                 );
                 if (saved) {
-                    appendLog(LanguageManager
-                                    .getInstance()
-                                    .getBundle()
-                                    .getString("packet.savedPacket") + " " + (name.isBlank() ? LanguageManager
-                                                                                    .getInstance()
-                                                                                    .getBundle()
-                                                                                    .getString("auto") : name));
+                    appendLog(t("packet.savedPacket") + " " + (name.isBlank() ? t("auto") : name));
                 } else {
-                    appendLog(LanguageManager
-                                    .getInstance()
-                                    .getBundle()
-                                    .getString("packet.errorSavePacket_nameExists"));
+                    appendLog(t("packet.errorSavePacket_nameExists"));
                 }
             } catch (IOException e) {
-                appendLog(LanguageManager
-                                .getInstance()
-                                .getBundle()
-                                .getString("packet.errorSavePacket") + " " + e.getMessage());
+                appendLog(t("packet.errorSavePacket") + " " + e.getMessage());
             }
         });
     }
@@ -620,24 +500,15 @@ public class MainMenuController {
         try {
             List<String> packets = FileManager.getInstance().listPackets();
             if (packets.isEmpty()) {
-                appendLog(LanguageManager
-                                .getInstance()
-                                .getBundle()
-                                .getString("packet.noExistingPacket"));
+                appendLog(t("packet.noExistingPacket"));
                 return;
             }
 
             // mostra una ChoiceDialog con la lista dei pacchetti
             ChoiceDialog<String> dialog = new ChoiceDialog<>(packets.get(0), packets);
-            dialog.setTitle(LanguageManager
-                                    .getInstance()
-                                    .getBundle()
-                                    .getString("packet.loadPacket"));
+            dialog.setTitle(t("packet.loadPacket"));
             dialog.setHeaderText(null);
-            dialog.setContentText(LanguageManager
-                                        .getInstance()
-                                        .getBundle()
-                                        .getString("packet.choosePacket"));
+            dialog.setContentText(t("packet.choosePacket"));
 
             dialog.showAndWait().ifPresent(name -> {
                 try {
@@ -661,32 +532,20 @@ public class MainMenuController {
                         if (parts.length == 2) addHeaderRow(parts[0], parts[1]);
                     }
 
-                    appendLog(LanguageManager
-                                    .getInstance()
-                                    .getBundle()
-                                    .getString("packet.loadedPacket") + " " + (name.isBlank() ? LanguageManager.getInstance().getBundle().getString("auto") : name));
+                    appendLog(t("packet.loadedPacket") + " " + (name.isBlank() ? t("auto") : name));
                 } catch (IOException e) {
-                    appendLog(LanguageManager
-                                    .getInstance()
-                                    .getBundle()
-                                    .getString("packet.errorLoadPacket") + " " + e.getMessage());
+                    appendLog(t("packet.errorLoadPacket") + " " + e.getMessage());
                 }
             });
         } catch (IOException e) {
-            appendLog(LanguageManager
-                            .getInstance()
-                            .getBundle()
-                            .getString("packet.errorReadingPacket") + " " + e.getMessage());
+            appendLog(t("packet.errorReadingPacket") + " " + e.getMessage());
         }
     }
 
     @FXML
     private void onSaveLogClick(ActionEvent event) {
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle(LanguageManager
-                                    .getInstance()
-                                    .getBundle()
-                                    .getString("filechooser.saveLog"));
+        fileChooser.setTitle(t("filechooser.saveLog"));
         
         // parte dalla cartella saved_logs come default
         fileChooser.setInitialDirectory(
@@ -710,15 +569,9 @@ public class MainMenuController {
         if (file != null) {
             try {
                 FileManager.getInstance().saveLog(logArea.getText(), file);
-                appendLog(LanguageManager
-                            .getInstance()
-                            .getBundle()
-                            .getString("filechooser.logSavedAt") + " " + file.getAbsolutePath());
+                appendLog(t("filechooser.logSavedAt") + " " + file.getAbsolutePath());
             } catch (IOException e) {
-                appendLog(LanguageManager
-                            .getInstance()
-                            .getBundle()
-                            .getString("filechooser.errorSaveLog") + " " + e.getMessage());
+                appendLog(t("filechooser.errorSaveLog") + " " + e.getMessage());
             }
         }
     }
@@ -728,10 +581,7 @@ public class MainMenuController {
         SceneManager.getInstance().loadPopupScene(
             event,
             SceneManager.SceneKeys.SETTINGS_VIEW,
-            LanguageManager
-                .getInstance()
-                .getBundle()
-                .getString("settings.title"),
+            t("settings.title"),
             350, 200
         );
     }
@@ -802,5 +652,10 @@ public class MainMenuController {
         } catch (IllegalArgumentException e) {
             return false;
         }
+    }
+
+    // helper per tradurre le stringhe usando il LanguageManager, evita di scrivere sempre "t()"
+    private String t(String key) {
+        return LanguageManager.getInstance().getBundle().getString(key);
     }
 }
