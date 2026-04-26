@@ -3,6 +3,7 @@ package com.cookie.tools;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+import com.cookie.tools.managers.LanguageManager;
 import com.cookie.tools.managers.SceneManager;
 
 import javafx.application.Application;
@@ -34,7 +35,7 @@ public class App extends Application {
         // Inizializza lo SceneManager
         SceneManager.getInstance()
                 .loadScene(stage, SceneManager.SceneKeys.MAIN_MENU_VIEW, 
-                    bundle.getString("app.title"), MIN_WIDTH, MIN_HEIGHT);
+                    LanguageManager.getInstance().getBundle().getString("app.title"), MIN_WIDTH, MIN_HEIGHT);
     }
 
     public static void main(String[] args) {

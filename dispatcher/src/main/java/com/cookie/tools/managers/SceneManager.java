@@ -79,7 +79,8 @@ public class SceneManager {
             
         } catch (Exception e) {
             // e.printStackTrace();
-            showAlert("Error", "Unable to load the scene: " + sceneKey.getKey(), AlertType.ERROR);
+            showAlert(LanguageManager.getInstance().getBundle().getString("alert.errorTitle"),
+                LanguageManager.getInstance().getBundle().getString("alert.errorLoadScene") + " " + sceneKey.getKey(), AlertType.ERROR);
             System.out.println("Errore nel caricamento della scena: " + sceneKey.getKey());
         }
     }
@@ -125,7 +126,8 @@ public class SceneManager {
             
         } catch (Exception e) {
             // e.printStackTrace();
-            showAlert("Error", "Unable to load the scene: " + sceneKey.getKey(), AlertType.ERROR);
+            showAlert(LanguageManager.getInstance().getBundle().getString("alert.errorTitle"),
+            LanguageManager.getInstance().getBundle().getString("alert.errorLoadScene") + " " + sceneKey.getKey(), AlertType.ERROR);
             System.out.println("Errore nel caricamento della scena: " + sceneKey.getKey());
         }
     }

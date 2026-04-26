@@ -6,6 +6,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
 
+import javafx.scene.control.Alert.AlertType;
+
 public class SettingsManager {
     private static SettingsManager instance;
     private final Properties props = new Properties();
@@ -68,9 +70,12 @@ public class SettingsManager {
 
     private void save() {
         try (FileOutputStream fos = new FileOutputStream(SETTINGS_FILE)) {
-            props.store(fos, "Cookie Tools Settings");
+            props.store(fos, "HookShot Settings");
         } catch (IOException e) {
-            System.out.println("Errore salvataggio settings: " + e.getMessage());
+            SceneManager.getInstance().showAlert(
+                LanguageManager.getInstance().getBundle().getString("alert.errorTitle"),
+                LanguageManager.getInstance().getBundle().getString("alert.errorSaveSettings") + " " + e.getMessage(),
+                AlertType.ERROR);
         }
     }
 
