@@ -9,7 +9,11 @@ public class LanguageManager {
 
     public enum SupportedLanguage {
         ENGLISH("en", "en-US"),
-        ITALIAN("it", "it-IT");
+        ITALIAN("it", "it-IT"),
+        GERMAN("de", "de-DE"),
+        SPANISH("es", "es-ES"),
+        FRENCH("fr", "fr-FR"),
+        POLISH("pl", "pl-PL");
 
         private final String code;
         private final String tag;

@@ -16,7 +16,7 @@ public class SettingsController {
 
     @FXML
     private void initialize() {
-        languageChoiceBox.getItems().addAll("en", "it");
+        languageChoiceBox.getItems().addAll("en", "it", "de", "es", "fr", "pl");
         languageChoiceBox.setValue(SettingsManager.getInstance().getLanguage());
         maxRequestsSpinner.getValueFactory().setValue(
             SettingsManager.getInstance().getMaxParallelRequests()
