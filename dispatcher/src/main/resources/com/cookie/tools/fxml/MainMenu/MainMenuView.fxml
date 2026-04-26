@@ -69,6 +69,12 @@
             <Button fx:id="openFileButton" mnemonicParsing="false" onAction="#onOpenFileClick" text="%button.openFile" textAlignment="CENTER" />
             <Button fx:id="clearBodyButton" mnemonicParsing="false" onAction="#onClearBodyClick" text="%button.clearBody" textAlignment="CENTER" />
             <Button fx:id="clearLogsButton" mnemonicParsing="false" onAction="#onClearLogsClick" text="%button.clearLogs" textAlignment="CENTER" />
+            <Button fx:id="saveUrlButton" mnemonicParsing="false" onAction="#onSaveUrlClick" text="%button.saveUrl" textAlignment="CENTER" />
+            <Button fx:id="loadUrlButton" mnemonicParsing="false" onAction="#onLoadUrlClick" text="%button.loadUrl" textAlignment="CENTER" />
+            <Button fx:id="saveHeadersButton" mnemonicParsing="false" onAction="#onSaveHeadersClick" text="%button.saveHeaders" textAlignment="CENTER" />
+            <Button fx:id="loadHeadersButton" mnemonicParsing="false" onAction="#onLoadHeadersClick" text="%button.loadHeaders" textAlignment="CENTER" />
+            <Button fx:id="savePacketButton" mnemonicParsing="false" onAction="#onSavePacketClick" text="%button.savePacket" textAlignment="CENTER" />
+            <Button fx:id="loadPacketButton" mnemonicParsing="false" onAction="#onLoadPacketClick" text="%button.loadPacket" textAlignment="CENTER" />
          </children>
          <padding>
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />

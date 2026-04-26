@@ -13,7 +13,9 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
+import com.cookie.tools.managers.FileManager;
 import com.cookie.tools.managers.LanguageManager;
+import com.cookie.tools.managers.PacketData;
 import com.cookie.tools.managers.SceneManager;
 import com.cookie.tools.managers.SettingsManager;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -27,8 +29,10 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
@@ -51,6 +55,18 @@ public class MainMenuController {
     private Button clearLogsButton;
     @FXML
     private Button clearBodyButton;
+    @FXML
+    private Button saveUrlButton;
+    @FXML
+    private Button loadUrlButton;
+    @FXML
+    private Button saveHeadersButton;
+    @FXML
+    private Button loadHeadersButton;
+    @FXML
+    private Button savePacketButton;
+    @FXML
+    private Button loadPacketButton;
 
     // --- SELETTORI ---
     @FXML
@@ -89,35 +105,101 @@ public class MainMenuController {
     private String getMethod() {
         return methodChoiceBox.getValue(); // ritorna la stringa "GET", "POST", ecc.
     }
-    // aggiunge righe di header dinamicamente al click del pulsante "Aggiungi Header"
-    @FXML
-    private void onAddHeaderClick(ActionEvent event) {
-        // Crea il contenitore orizzontale per la singola riga
-        HBox riga = new HBox(10); // 10px di spazio tra gli elementi
+
+    // metodo base che crea una riga con chiave e valore già compilati
+    // usato sia dal pulsante "Aggiungi Header" che dal caricamento dei file
+    private void addHeaderRow(String key, String value) {
+        HBox riga = new HBox(10);
         riga.setAlignment(Pos.CENTER_LEFT);
         riga.setPadding(new Insets(5));
 
-        // Crea i campi di input
-        TextField keyField = new TextField();
+        TextField keyField = new TextField(key);
         keyField.setPromptText("Chiave");
         keyField.setPrefWidth(150);
 
-        TextField valueField = new TextField();
+        TextField valueField = new TextField(value);
         valueField.setPromptText("Valore");
-        HBox.setHgrow(valueField, Priority.ALWAYS); // Il valore occupa tutto lo spazio libero
+        HBox.setHgrow(valueField, Priority.ALWAYS);
 
-        // Crea il tasto per rimuovere questa specifica riga
         Button removeBtn = new Button("X");
         removeBtn.setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
-        
-        // Logica di rimozione: quando clicco X, la riga rimuove se stessa dal VBox
         removeBtn.setOnAction(e -> headersContainer.getChildren().remove(riga));
 
-        // Mette tutto insieme
         riga.getChildren().addAll(keyField, valueField, removeBtn);
-
-        // Aggiunge la riga al VBox principale
         headersContainer.getChildren().add(riga);
+    }
+
+    // aggiunge righe di header dinamicamente al click del pulsante "Aggiungi Header"
+    // pulsante "Aggiungi Header" — riga vuota
+    @FXML
+    private void onAddHeaderClick(ActionEvent event) {
+        addHeaderRow("", "");
+    }
+
+    // pulsante "Carica Headers" — carica da file e popola le righe
+    @FXML
+    private void onLoadHeadersClick(ActionEvent event) {
+        try {
+            List<String> headers = FileManager.getInstance().listHeaders();
+            if (headers.isEmpty()) {
+                appendLog("[INFO] Nessun headers template salvato.");
+                return;
+            }
+
+            ChoiceDialog<String> dialog = new ChoiceDialog<>(headers.get(0), headers);
+            dialog.setTitle("Carica Headers");
+            dialog.setHeaderText(null);
+            dialog.setContentText("Scegli un template:");
+
+            dialog.showAndWait().ifPresent(name -> {
+                try {
+                    String rawHeaders = FileManager.getInstance().loadHeaders(name);
+
+                    // pulisce le righe esistenti
+                    clearHeaders();
+
+                    // per ogni riga del file crea una riga nella UI
+                    for (String line : rawHeaders.split("\n")) {
+                        if (line.isBlank()) continue;
+                        String[] parts = line.split(" : ", 2);
+                        if (parts.length == 2) {
+                            addHeaderRow(parts[0].trim(), parts[1].trim());
+                        }
+                    }
+
+                    appendLog("[OK] Headers caricati: " + name);
+                } catch (IOException e) {
+                    appendLog("[ERRORE] Caricamento headers fallito: " + e.getMessage());
+                }
+            });
+        } catch (IOException e) {
+            appendLog("[ERRORE] Lettura headers fallita: " + e.getMessage());
+        }
+    }
+
+    // pulsante "Salva Headers"
+    @FXML
+    private void onSaveHeadersClick(ActionEvent event) {
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("Salva Headers");
+        dialog.setHeaderText(null);
+        dialog.setContentText("Nome template (vuoto = automatico):");
+
+        dialog.showAndWait().ifPresent(name -> {
+            try {
+                boolean saved = FileManager.getInstance().saveHeaders(
+                    name,
+                    getFormattedHeaders()
+                );
+                if (saved) {
+                    appendLog("[OK] Headers salvati: " + (name.isBlank() ? "automatico" : name));
+                } else {
+                    appendLog("[ERRORE] Esiste già un template con questo nome.");
+                }
+            } catch (IOException e) {
+                appendLog("[ERRORE] Salvataggio headers fallito: " + e.getMessage());
+            }
+        });
     }
 
     // legge il valore delle righe degli header
@@ -145,6 +227,60 @@ public class MainMenuController {
         }
         //logArea.appendText("Headers formattati:\n" + sb);
         return sb.toString();
+    }
+
+    // pulsante "Carica URL"
+    @FXML
+    private void onLoadUrlClick(ActionEvent event) {
+        try {
+            List<String> urls = FileManager.getInstance().listUrls();
+            if (urls.isEmpty()) {
+                appendLog("[INFO] Nessun URL salvato.");
+                return;
+            }
+
+            ChoiceDialog<String> dialog = new ChoiceDialog<>(urls.get(0), urls);
+            dialog.setTitle("Carica URL");
+            dialog.setHeaderText(null);
+            dialog.setContentText("Scegli un URL:");
+
+            dialog.showAndWait().ifPresent(name -> {
+                try {
+                    String url = FileManager.getInstance().loadUrl(name);
+                    urlField.setText(url);
+                    appendLog("[OK] URL caricato: " + name + " → " + url);
+                } catch (IOException e) {
+                    appendLog("[ERRORE] Caricamento URL fallito: " + e.getMessage());
+                }
+            });
+        } catch (IOException e) {
+            appendLog("[ERRORE] Lettura URL fallita: " + e.getMessage());
+        }
+    }
+
+    // pulsante "Salva URL"
+    @FXML
+    private void onSaveUrlClick(ActionEvent event) {
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("Salva URL");
+        dialog.setHeaderText(null);
+        dialog.setContentText("Nome (vuoto = automatico):");
+
+        dialog.showAndWait().ifPresent(name -> {
+            try {
+                boolean saved = FileManager.getInstance().saveUrl(
+                    name,
+                    getTargetUrl()
+                );
+                if (saved) {
+                    appendLog("[OK] URL salvato: " + (name.isBlank() ? "automatico" : name));
+                } else {
+                    appendLog("[ERRORE] Esiste già un URL con questo nome.");
+                }
+            } catch (IOException e) {
+                appendLog("[ERRORE] Salvataggio URL fallito: " + e.getMessage());
+            }
+        });
     }
 
     // Invia la richiesta al click del pulsante "Invia"
@@ -322,6 +458,81 @@ public class MainMenuController {
             } catch (IOException e) {
                 appendLog("Errore lettura file: " + e.getMessage());
             }
+        }
+    }
+
+    @FXML
+    private void onSavePacketClick(ActionEvent event) {
+        // apre un dialog per chiedere il nome
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("Salva pacchetto");
+        dialog.setHeaderText(null);
+        dialog.setContentText("Nome pacchetto (vuoto = automatico):");
+
+        dialog.showAndWait().ifPresent(name -> {
+            try {
+                boolean saved = FileManager.getInstance().savePacket(
+                    name,
+                    getMethod(),
+                    getTargetUrl(),
+                    getFormattedHeaders(),
+                    bodyArea.getText().trim()
+                );
+                if (saved) {
+                    appendLog("[OK] Pacchetto salvato: " + (name.isBlank() ? "automatico" : name));
+                } else {
+                    appendLog("[ERRORE] Esiste già un pacchetto con questo nome.");
+                }
+            } catch (IOException e) {
+                appendLog("[ERRORE] Salvataggio fallito: " + e.getMessage());
+            }
+        });
+    }
+
+    @FXML
+    private void onLoadPacketClick(ActionEvent event) {
+        try {
+            List<String> packets = FileManager.getInstance().listPackets();
+            if (packets.isEmpty()) {
+                appendLog("[INFO] Nessun pacchetto salvato.");
+                return;
+            }
+
+            // mostra una ChoiceDialog con la lista dei pacchetti
+            ChoiceDialog<String> dialog = new ChoiceDialog<>(packets.get(0), packets);
+            dialog.setTitle("Carica pacchetto");
+            dialog.setHeaderText(null);
+            dialog.setContentText("Scegli un pacchetto:");
+
+            dialog.showAndWait().ifPresent(name -> {
+                try {
+                    PacketData packet = FileManager.getInstance().loadPacket(name);
+
+                    urlField.setText(packet.url);
+                    methodChoiceBox.setValue(packet.method);
+
+                    // prettifica ogni body separatamente e li riunisce con doppio a capo
+                    String prettyBody = Arrays.stream(packet.body.split("\n\n"))
+                        .map(String::trim)
+                        .filter(b -> !b.isEmpty())
+                        .map(this::prettyPrintJson) // applica jackson su ciascuno
+                        .collect(Collectors.joining("\n\n"));
+
+                    bodyArea.setText(prettyBody);
+
+                    clearHeaders();
+                    for (String header : packet.headers) {
+                        String[] parts = header.split(" : ", 2);
+                        if (parts.length == 2) addHeaderRow(parts[0], parts[1]);
+                    }
+
+                    appendLog("[OK] Pacchetto caricato: " + name);
+                } catch (IOException e) {
+                    appendLog("[ERRORE] Caricamento fallito: " + e.getMessage());
+                }
+            });
+        } catch (IOException e) {
+            appendLog("[ERRORE] Lettura pacchetti fallita: " + e.getMessage());
         }
     }
 
