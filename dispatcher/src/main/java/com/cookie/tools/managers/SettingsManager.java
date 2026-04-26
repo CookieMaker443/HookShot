@@ -16,6 +16,7 @@ public class SettingsManager {
     public static final String HEADERS_DIR  = BASE_DIR + "/saved_headers_templates";
     public static final String URLS_DIR     = BASE_DIR + "/saved_url_templates";
     public static final String SETTINGS_FILE = BASE_DIR + "/settings.properties";
+    public static final String LOGS_DIR     = BASE_DIR + "/saved_logs";
     // chiavi
     private static final String KEY_LANGUAGE = "language";
     private static final String KEY_MAX_REQUESTS = "maxParallelRequests";
@@ -48,6 +49,7 @@ public class SettingsManager {
         new File(dir + "/saved_packet_templates").mkdirs();
         new File(dir + "/saved_headers_templates").mkdirs();
         new File(dir + "/saved_url_templates").mkdirs();
+        new File(dir + "/saved_logs").mkdirs();
         return dir;
     }
 

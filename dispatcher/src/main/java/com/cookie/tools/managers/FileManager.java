@@ -1,5 +1,6 @@
 package com.cookie.tools.managers;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -148,5 +149,10 @@ public class FileManager {
                 .sorted()
                 .collect(java.util.stream.Collectors.toList());
         }
+    }
+
+    // salva il log in un path scelto dall'utente
+    public void saveLog(String content, File file) throws IOException {
+        Files.writeString(file.toPath(), content);
     }
 }

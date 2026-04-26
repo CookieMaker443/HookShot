@@ -7,6 +7,8 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.file.Files;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -52,9 +54,11 @@ public class MainMenuController {
     @FXML
     private Button openFileButton;
     @FXML
+    private Button clearBodyButton;
+    @FXML
     private Button clearLogsButton;
     @FXML
-    private Button clearBodyButton;
+    private Button saveLogButton;
     @FXML
     private Button saveUrlButton;
     @FXML
@@ -533,6 +537,40 @@ public class MainMenuController {
             });
         } catch (IOException e) {
             appendLog("[ERRORE] Lettura pacchetti fallita: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void onSaveLogClick(ActionEvent event) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Salva Log");
+        
+        // parte dalla cartella saved_logs come default
+        fileChooser.setInitialDirectory(
+            new File(SettingsManager.LOGS_DIR)
+        );
+        
+        // nome file di default con timestamp
+        String defaultName = "log_" + LocalDateTime.now()
+            .format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss")) + ".txt";
+        fileChooser.setInitialFileName(defaultName);
+
+        // filtri per tipo file
+        fileChooser.getExtensionFilters().addAll(
+            new FileChooser.ExtensionFilter("File di testo", "*.txt"),
+            new FileChooser.ExtensionFilter("Tutti i file", "*.*")
+        );
+
+        // apre il file explorer — ritorna null se l'utente annulla
+        File file = fileChooser.showSaveDialog(saveLogButton.getScene().getWindow());
+        
+        if (file != null) {
+            try {
+                FileManager.getInstance().saveLog(logArea.getText(), file);
+                appendLog("[OK] Log salvato in: " + file.getAbsolutePath());
+            } catch (IOException e) {
+                appendLog("[ERRORE] Salvataggio log fallito: " + e.getMessage());
+            }
         }
     }
 
