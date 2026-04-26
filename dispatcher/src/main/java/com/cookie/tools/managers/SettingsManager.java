@@ -1,5 +1,6 @@
 package com.cookie.tools.managers;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -9,9 +10,12 @@ public class SettingsManager {
     private static SettingsManager instance;
     private final Properties props = new Properties();
     
-    // path del file nella cartella dell'app
-    private static final String SETTINGS_FILE = "settings.properties";
-
+    // path dei salvataggi nel filesystem
+    private static final String BASE_DIR = getBasePath();
+    public static final String PACKETS_DIR  = BASE_DIR + "/saved_packet_templates";
+    public static final String HEADERS_DIR  = BASE_DIR + "/saved_headers_templates";
+    public static final String URLS_DIR     = BASE_DIR + "/saved_url_templates";
+    public static final String SETTINGS_FILE = BASE_DIR + "/settings.properties";
     // chiavi
     private static final String KEY_LANGUAGE = "language";
     private static final String KEY_MAX_REQUESTS = "maxParallelRequests";
@@ -29,6 +33,22 @@ public class SettingsManager {
 
     private SettingsManager() {
         load();
+    }
+
+    // Detect dell'os
+    private static String getBasePath() {
+        String os = System.getProperty("os.name").toLowerCase();
+        String dir;
+        if (os.contains("win")) {
+            dir = System.getenv("APPDATA") + "/hookshot";
+        } else {
+            dir = System.getProperty("user.home") + "/.config/hookshot";
+        }
+        // crea tutte le cartelle se non esistono
+        new File(dir + "/saved_packet_templates").mkdirs();
+        new File(dir + "/saved_headers_templates").mkdirs();
+        new File(dir + "/saved_url_templates").mkdirs();
+        return dir;
     }
 
     // --- LOAD / SAVE ---
