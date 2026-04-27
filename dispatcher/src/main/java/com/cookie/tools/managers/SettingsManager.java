@@ -19,6 +19,11 @@ public class SettingsManager {
     public static final String URLS_DIR     = BASE_DIR + "/saved_url_templates";
     public static final String SETTINGS_FILE = BASE_DIR + "/settings.properties";
     public static final String LOGS_DIR     = BASE_DIR + "/saved_logs";
+
+    // chiave per la versione http da usare (1.1 o 2)
+    private static final String KEY_HTTP_VERSION = "httpVersion";
+    private static final String DEFAULT_HTTP_VERSION = "HTTP_1_1";
+
     // chiavi
     private static final String KEY_LANGUAGE = "language";
     private static final String KEY_MAX_REQUESTS = "maxParallelRequests";
@@ -28,6 +33,12 @@ public class SettingsManager {
     private static final String DEFAULT_LANGUAGE = "en";
     private static final String DEFAULT_MAX_REQUESTS = "3";
     private static final String DEFAULT_LAST_URL = "";
+
+    // sessione corrente — sopravvive al reload della scena
+    private String sessionMethod = "";
+    private String sessionUrl = "";
+    private String sessionHeaders = "";
+    private String sessionBody = "";
 
     public static SettingsManager getInstance() {
         if (instance == null) instance = new SettingsManager();
@@ -106,5 +117,32 @@ public class SettingsManager {
     public void setLastUrl(String url) {
         props.setProperty(KEY_LAST_URL, url);
         save();
+    }
+
+    // HTTP VERSION
+    public String getHttpVersion() {
+        return props.getProperty(KEY_HTTP_VERSION, DEFAULT_HTTP_VERSION);
+    }
+
+    public void setHttpVersion(String version) {
+        props.setProperty(KEY_HTTP_VERSION, version);
+        save();
+    }
+
+    // Getter e setter per la permanenza dei pacchetti al cambio scena
+    public void saveSession(String method, String url, String headers, String body) {
+        this.sessionMethod = method;
+        this.sessionUrl = url;
+        this.sessionHeaders = headers;
+        this.sessionBody = body;
+    }
+
+    public String getSessionMethod() { return sessionMethod; }
+    public String getSessionUrl() { return sessionUrl; }
+    public String getSessionHeaders() { return sessionHeaders; }
+    public String getSessionBody() { return sessionBody; }
+
+    public boolean hasSession() {
+        return !sessionUrl.isEmpty();
     }
 }

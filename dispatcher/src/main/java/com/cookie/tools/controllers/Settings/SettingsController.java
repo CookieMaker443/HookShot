@@ -1,5 +1,6 @@
 package com.cookie.tools.controllers.Settings;
 
+import com.cookie.tools.controllers.MainMenu.MainMenuController.HttpVersion;
 import com.cookie.tools.managers.LanguageManager;
 import com.cookie.tools.managers.SceneManager;
 import com.cookie.tools.managers.SettingsManager;
@@ -13,6 +14,7 @@ public class SettingsController {
 
     @FXML private ChoiceBox<String> languageChoiceBox;
     @FXML private Spinner<Integer> maxRequestsSpinner;
+    @FXML private ChoiceBox<String> httpVersionChoiceBox;
 
     @FXML
     private void initialize() {
@@ -21,6 +23,10 @@ public class SettingsController {
         maxRequestsSpinner.getValueFactory().setValue(
             SettingsManager.getInstance().getMaxParallelRequests()
         );
+        for (HttpVersion v : HttpVersion.values()) {
+            httpVersionChoiceBox.getItems().add(v.name());
+        }
+        httpVersionChoiceBox.setValue(SettingsManager.getInstance().getHttpVersion());
     }
 
     @FXML
@@ -41,6 +47,11 @@ public class SettingsController {
         int height = (int) primaryStage.getHeight();
         int width = (int) primaryStage.getWidth(); 
 
+        // prima salva la versione http da utase
+        SettingsManager.getInstance().setHttpVersion(httpVersionChoiceBox.getValue());
+        System.out.println("HTTP Version Saved: " + SettingsManager.getInstance().getHttpVersion());
+
+        // poi ricarica la scena principale per applicare le modifiche
         SceneManager.getInstance().reloadCurrentScene(
             primaryStage,
             SceneManager.SceneKeys.MAIN_MENU_VIEW,

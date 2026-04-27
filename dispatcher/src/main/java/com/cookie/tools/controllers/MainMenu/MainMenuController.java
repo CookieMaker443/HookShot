@@ -83,10 +83,9 @@ public class MainMenuController {
     private VBox headersContainer; // Collegalo a un VBox nel tuo FXML
 
     // --- HTTP CLIENT ---
-    private HttpClient client = HttpClient.newHttpClient();
+    private HttpClient client = buildClient(); // istanziato una volta all inizio
 
     // --- JSON PRETTY PRINT (opzionale, per loggare i body in modo leggibile) ---
-
     private final ObjectMapper objectMapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
 
     // --- TEXT AREA ---
@@ -97,6 +96,36 @@ public class MainMenuController {
     @FXML
     private TextArea responseArea;
 
+    public enum HttpVersion {
+        HTTP_1_1(HttpClient.Version.HTTP_1_1),
+        HTTP_2(HttpClient.Version.HTTP_2);
+
+        private final HttpClient.Version version;
+
+        HttpVersion(HttpClient.Version version) {
+            this.version = version;
+        }
+
+        public HttpClient.Version getVersion() {
+            return version;
+        }
+    }
+
+    // costruzione del client
+    private HttpClient buildClient() {
+        HttpClient.Version version = HttpVersion
+            .valueOf(SettingsManager.getInstance().getHttpVersion())
+            .getVersion();
+        return HttpClient.newBuilder()
+            .version(version)
+            .build();
+    }
+
+    // chiamato dopo che l'utente salva le settings
+    public void refreshClient() {
+        client = buildClient();
+    }
+
     @FXML
     private void initialize() {
         for (HttpMethod m : HttpMethod.values()) {
@@ -104,6 +133,19 @@ public class MainMenuController {
         }
         methodChoiceBox.setValue(HttpMethod.GET.name()); // valore di default
         urlField.setText(SettingsManager.getInstance().getLastUrl());
+        if(SettingsManager.getInstance().hasSession()){
+            urlField.setText(SettingsManager.getInstance().getSessionUrl());
+            bodyArea.setText(SettingsManager.getInstance().getSessionBody());
+            String[] headerLines = SettingsManager.getInstance().getSessionHeaders().split("\n");
+            for(String line : headerLines){
+                if(line.isBlank()) continue;
+                String[] parts = line.split(" : ", 2);
+                if(parts.length == 2){
+                    addHeaderRow(parts[0].trim(), parts[1].trim());
+                }
+            }
+            methodChoiceBox.setValue(SettingsManager.getInstance().getSessionMethod());
+        }
     }
 
     private String getMethod() {
@@ -418,19 +460,43 @@ public class MainMenuController {
             // --- INVIO ASINCRONO ---
             // sendAsync non blocca il thread UI: la richiesta parte in background
             // e thenAccept viene chiamato quando la risposta arriva
+
+            System.out.println("=== DEBUG REQUEST ===");
+            System.out.println("URL: " + url);
+            System.out.println("Method: " + method);
+            System.out.println("Body: " + body);
+            request.headers().map().forEach((k, v) -> 
+                System.out.println("Header: " + k + " = " + v));
+            System.out.println("====================");
+
             return client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
                 .thenAccept(response -> {
-                    // siamo su un thread separato (non il thread JavaFX)
-                    // Platform.runLater è OBBLIGATORIO per toccare i componenti UI
-                    // senza di esso JavaFX lancia un'eccezione
+                    System.out.println("=== DEBUG RESPONSE ===");
+                    System.out.println("Status: " + response.statusCode());
+                    System.out.println("Body: " + response.body());
+                    System.out.println("======================");
+
                     Platform.runLater(() -> {
-                        logArea.appendText("=== [" + bodyIndex + "/" + total + "] "+ t("response.responseTitle")+" ===\n");
-                        logArea.appendText(t("response.bodySent") + ": " + (body.isEmpty() ? 
-                                                        t("response.bodySentEmpty") : body) + "\n");
+
+                        System.out.println("=== DEBUG RESPONSE2 ===");
+                        System.out.println("Status: " + response.statusCode());
+                        System.out.println("Body raw: '" + response.body() + "'");
+                        System.out.println("Body length: " + response.body().length());
+                        System.out.println("======================");
+
+                        logArea.appendText("=== [" + bodyIndex + "/" + total + "] " + t("response.responseTitle") + " ===\n");
+                        logArea.appendText(t("response.bodySent") + ": " + (body.isEmpty() ? t("response.bodySentEmpty") : body) + "\n");
                         logArea.appendText(t("response.status") + ": " + response.statusCode() + "\n");
                         logArea.appendText(t("response.bodyReceived") + ":\n" + prettyPrintJson(response.body()) + "\n");
                         logArea.appendText("================\n\n");
                     });
+                })
+                .exceptionally(ex -> {
+                    System.out.println("=== EXCEPTION ===");
+                    System.out.println(ex.getMessage());
+                    ex.printStackTrace();
+                    appendLog(t("request.buildingError") + " [" + bodyIndex + "]: " + ex.getMessage());
+                    return null;
                 });
 
         } catch (Exception e) {
@@ -578,6 +644,7 @@ public class MainMenuController {
 
     @FXML
     private void onSettingsClick(ActionEvent event) {
+        SettingsManager.getInstance().saveSession(methodChoiceBox.getValue(), urlField.getText(), getFormattedHeaders(), bodyArea.getText());
         SceneManager.getInstance().loadPopupScene(
             event,
             SceneManager.SceneKeys.SETTINGS_VIEW,

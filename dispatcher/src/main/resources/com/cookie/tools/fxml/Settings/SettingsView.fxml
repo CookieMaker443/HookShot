@@ -21,6 +21,12 @@
         <Spinner fx:id="maxRequestsSpinner" initialValue="3" max="10" min="1" prefWidth="80" />
     </HBox>
 
+    <!-- Versione HTTP -->
+    <HBox alignment="CENTER" spacing="10" >
+        <Label text="%settings.httpVersion"/>
+        <ChoiceBox fx:id="httpVersionChoiceBox"/>
+    </HBox>
+
     <!-- Salva -->
     <Button onAction="#onSaveClick" text="%settings.save" />
 
