@@ -1,5 +1,6 @@
 package com.cookie.tools.managers;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -77,7 +78,7 @@ public class SceneManager {
             System.out.println("Caricata scena: " + sceneKey.getKey());
             stage.show();
             
-        } catch (Exception e) {
+        } catch (IOException | RuntimeException e) {
             // e.printStackTrace();
             showAlert(LanguageManager.getInstance().getBundle().getString("alert.errorTitle"),
                 LanguageManager.getInstance().getBundle().getString("alert.errorLoadScene") + " " + sceneKey.getKey(), AlertType.ERROR);
@@ -124,7 +125,7 @@ public class SceneManager {
             System.out.println("Caricata scena popup: " + sceneKey.getKey());
             popupStage.showAndWait();
             
-        } catch (Exception e) {
+        } catch (IOException | RuntimeException e) {
             // e.printStackTrace();
             showAlert(LanguageManager.getInstance().getBundle().getString("alert.errorTitle"),
             LanguageManager.getInstance().getBundle().getString("alert.errorLoadScene") + " " + sceneKey.getKey(), AlertType.ERROR);

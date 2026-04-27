@@ -44,7 +44,7 @@ public class LanguageManager {
         load(SettingsManager.getInstance().getLanguage());
     }
 
-    public void load(String langCode) {
+    public final void load(String langCode) {
         SupportedLanguage lang = SupportedLanguage.fromCode(langCode);
         Locale locale = Locale.forLanguageTag(lang.getTag());
         bundle = ResourceBundle.getBundle("com.cookie.tools.i18n.language", locale);

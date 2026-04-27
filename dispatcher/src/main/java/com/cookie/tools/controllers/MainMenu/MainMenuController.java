@@ -40,6 +40,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 
+@SuppressWarnings("unused")
 public class MainMenuController {
 
     // --- PULSANTI ---
@@ -50,7 +51,7 @@ public class MainMenuController {
     @FXML
     private Button resetButton;
     @FXML
-    private Button addHeaderButton; // Collegalo a un Button nel tuo FXML
+    private Button addHeaderButton;
     @FXML
     private Button openFileButton;
     @FXML
@@ -74,13 +75,13 @@ public class MainMenuController {
 
     // --- SELETTORI ---
     @FXML
-    private TextField urlField; // Collegalo a un TextField nel tuo FXML
+    private TextField urlField;
     @FXML
-    private ChoiceBox<String> methodChoiceBox; // Collegalo a un ChoiceBox nel tuo FXML
+    private ChoiceBox<String> methodChoiceBox;
 
     // --- CONTAINERS ---
     @FXML
-    private VBox headersContainer; // Collegalo a un VBox nel tuo FXML
+    private VBox headersContainer;
 
     // --- HTTP CLIENT ---
     private HttpClient client = buildClient(); // istanziato una volta all inizio
@@ -93,8 +94,6 @@ public class MainMenuController {
     private TextArea logArea; 
     @FXML
     private TextArea bodyArea; 
-    @FXML
-    private TextArea responseArea;
 
     public enum HttpVersion {
         HTTP_1_1(HttpClient.Version.HTTP_1_1),
@@ -494,7 +493,7 @@ public class MainMenuController {
                 .exceptionally(ex -> {
                     System.out.println("=== EXCEPTION ===");
                     System.out.println(ex.getMessage());
-                    ex.printStackTrace();
+                    // ex.printStackTrace();
                     appendLog(t("request.buildingError") + " [" + bodyIndex + "]: " + ex.getMessage());
                     return null;
                 });
@@ -511,7 +510,7 @@ public class MainMenuController {
         try {
             Object json = objectMapper.readValue(raw, Object.class);
             return objectMapper.writeValueAsString(json);
-        } catch (Exception e) {
+        } catch (IOException | NullPointerException | IllegalArgumentException e) {
             return raw; // non è JSON, restituisce il body originale
         }
     }
@@ -670,15 +669,6 @@ public class MainMenuController {
 
     private void appendLog(String message) {
         Platform.runLater(() -> logArea.appendText(message + "\n"));
-    }
-
-    private void appendLog(HttpResponse<String> response) {
-        Platform.runLater(() -> {
-            logArea.appendText("=== RISPOSTA ===\n");
-            logArea.appendText("Status: " + response.statusCode() + "\n");
-            logArea.appendText("Body:\n" + response.body() + "\n");
-            logArea.appendText("================\n\n");
-        });
     }
 
     private void resetAll() {
