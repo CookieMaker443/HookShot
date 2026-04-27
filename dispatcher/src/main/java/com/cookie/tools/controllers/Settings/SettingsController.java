@@ -10,6 +10,7 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Spinner;
 import javafx.stage.Stage;
 
+@SuppressWarnings("unused")
 public class SettingsController {
 
     @FXML private ChoiceBox<String> languageChoiceBox;
@@ -55,7 +56,7 @@ public class SettingsController {
         SceneManager.getInstance().reloadCurrentScene(
             primaryStage,
             SceneManager.SceneKeys.MAIN_MENU_VIEW,
-            LanguageManager.getInstance().getBundle().getString("settings.title"),
+            LanguageManager.getInstance().getBundle().getString("app.title"),
             1500, 750
         );
     }
