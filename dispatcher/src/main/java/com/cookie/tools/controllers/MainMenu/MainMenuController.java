@@ -45,6 +45,8 @@ public class MainMenuController {
 
     // --- PULSANTI ---
     @FXML
+    private Button aboutButton;
+    @FXML
     private Button sendRequestButton;
     @FXML
     private Button settingsButton;
@@ -652,6 +654,9 @@ public class MainMenuController {
         );
     }
 
+    @FXML
+    private void onAboutClick(ActionEvent event) {}
+    
     @FXML
     private void onResetClick(ActionEvent event) {
         resetAll();
