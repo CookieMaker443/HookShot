@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.web.*?>
 
-<?import javafx.scene.web.WebView?>
-
-
-<WebView prefHeight="200.0" prefWidth="200.0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" />
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.cookie.tools.controllers.About.AboutController">
+    <WebView fx:id="aboutWebView" VBox.vgrow="ALWAYS"/>
+</VBox>

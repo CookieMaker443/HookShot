@@ -27,7 +27,8 @@ public class SceneManager {
 
     public enum SceneKeys {
         MAIN_MENU_VIEW("MainMenuView"),
-        SETTINGS_VIEW("SettingsView");
+        SETTINGS_VIEW("SettingsView"),
+        ABOUT_VIEW("AboutView");;
 
         private final String key;
 

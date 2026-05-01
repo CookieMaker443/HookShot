@@ -35,22 +35,39 @@
             <version>21.0.2</version>
         </dependency>
 
+        <!-- Separazione per le dipendenze di Jackson  -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>2.17.0</version>
         </dependency>
 
+        <!-- Dipendenze core e annotations di Jackson, se necessarie -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
             <version>2.17.0</version>
         </dependency>
         
+        <!-- Dipendenza per le annotazioni di Jackson, se utilizzate -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>
             <version>2.17.0</version>
+        </dependency>
+
+        <!-- Dipendenza per JavaFX WebView -->
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-web</artifactId>
+            <version>21.0.2</version>
+        </dependency>
+
+        <!-- Dipendenza per Flexmark, se necessaria -->
+        <dependency>
+            <groupId>com.vladsch.flexmark</groupId>
+            <artifactId>flexmark-all</artifactId>
+            <version>0.64.8</version>
         </dependency>
     </dependencies>
     <build>

@@ -13,6 +13,7 @@ test-output/
 dispatcher/target/surefire-reports/*
 dispatcher/target/failsafe-reports/*
 dispatcher/test-output/
+dispatcher/target/
 
 # ----------------------------------------------------------------------
 # 2. Artifacts del Sistema Operativo e IDE

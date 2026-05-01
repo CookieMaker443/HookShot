@@ -655,7 +655,14 @@ public class MainMenuController {
     }
 
     @FXML
-    private void onAboutClick(ActionEvent event) {}
+    private void onAboutClick(ActionEvent event) {
+            SceneManager.getInstance().loadPopupScene(
+            event,
+            SceneManager.SceneKeys.ABOUT_VIEW,
+            t("button.about"),
+            500, 400
+        );
+    }
 
     @FXML
     private void onResetClick(ActionEvent event) {
