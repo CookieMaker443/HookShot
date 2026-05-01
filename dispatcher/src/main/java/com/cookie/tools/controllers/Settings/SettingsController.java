@@ -1,5 +1,7 @@
 package com.cookie.tools.controllers.Settings;
 
+import java.io.File;
+
 import com.cookie.tools.controllers.MainMenu.MainMenuController.HttpVersion;
 import com.cookie.tools.managers.LanguageManager;
 import com.cookie.tools.managers.SceneManager;
@@ -16,6 +18,7 @@ public class SettingsController {
     @FXML private ChoiceBox<String> languageChoiceBox;
     @FXML private Spinner<Integer> maxRequestsSpinner;
     @FXML private ChoiceBox<String> httpVersionChoiceBox;
+    @FXML private ChoiceBox<String> themeChoiceBox;
 
     @FXML
     private void initialize() {
@@ -28,6 +31,7 @@ public class SettingsController {
             httpVersionChoiceBox.getItems().add(v.name());
         }
         httpVersionChoiceBox.setValue(SettingsManager.getInstance().getHttpVersion());
+        loadCSS();
     }
 
     @FXML
@@ -51,6 +55,7 @@ public class SettingsController {
         // prima salva la versione http da utase
         SettingsManager.getInstance().setHttpVersion(httpVersionChoiceBox.getValue());
         System.out.println("HTTP Version Saved: " + SettingsManager.getInstance().getHttpVersion());
+        SettingsManager.getInstance().setTheme(themeChoiceBox.getValue());
 
         // poi ricarica la scena principale per applicare le modifiche
         SceneManager.getInstance().reloadCurrentScene(
@@ -59,5 +64,16 @@ public class SettingsController {
             LanguageManager.getInstance().getBundle().getString("app.title"),
             1500, 750
         );
+    }
+    
+    private void loadCSS(){
+        File themesDir = new File(SettingsManager.CSS_DIR);
+        File[] cssFiles = themesDir.listFiles((d, name) -> name.endsWith(".css"));
+        if (cssFiles != null) {
+            for (File f : cssFiles) {
+                themeChoiceBox.getItems().add(f.getName());
+            }
+        }
+        themeChoiceBox.setValue(SettingsManager.getInstance().getTheme());
     }
 }

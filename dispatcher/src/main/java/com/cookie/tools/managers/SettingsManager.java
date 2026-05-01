@@ -19,6 +19,8 @@ public class SettingsManager {
     public static final String URLS_DIR     = BASE_DIR + "/saved_url_templates";
     public static final String SETTINGS_FILE = BASE_DIR + "/settings.properties";
     public static final String LOGS_DIR     = BASE_DIR + "/saved_logs";
+    public static final String CSS_DIR = BASE_DIR + "/themes";
+    public static final String DEFAULT_CSS = CSS_DIR + "/default.css";
 
     // chiave per la versione http da usare (1.1 o 2)
     private static final String KEY_HTTP_VERSION = "httpVersion";
@@ -28,6 +30,8 @@ public class SettingsManager {
     private static final String KEY_LANGUAGE = "language";
     private static final String KEY_MAX_REQUESTS = "maxParallelRequests";
     private static final String KEY_LAST_URL = "lastUrl";
+    private static final String KEY_THEME = "theme";
+    private static final String DEFAULT_THEME = "default.css";
 
     // default
     private static final String DEFAULT_LANGUAGE = "en";
@@ -63,6 +67,7 @@ public class SettingsManager {
         new File(dir + "/saved_headers_templates").mkdirs();
         new File(dir + "/saved_url_templates").mkdirs();
         new File(dir + "/saved_logs").mkdirs();
+        new File(dir + "/themes").mkdirs();
         return dir;
     }
 
@@ -144,5 +149,15 @@ public class SettingsManager {
 
     public boolean hasSession() {
         return !sessionUrl.isEmpty();
+    }
+
+    // Theme
+    public String getTheme() {
+        return props.getProperty(KEY_THEME, DEFAULT_THEME);
+    }
+
+    public void setTheme(String theme) {
+        props.setProperty(KEY_THEME, theme);
+        save();
     }
 }

@@ -650,13 +650,13 @@ public class MainMenuController {
             event,
             SceneManager.SceneKeys.SETTINGS_VIEW,
             t("settings.title"),
-            350, 200
+            350, 400
         );
     }
 
     @FXML
     private void onAboutClick(ActionEvent event) {}
-    
+
     @FXML
     private void onResetClick(ActionEvent event) {
         resetAll();

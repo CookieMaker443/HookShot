@@ -1,10 +1,13 @@
 package com.cookie.tools.managers;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.nio.file.Files;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
@@ -46,6 +49,7 @@ public class SceneManager {
 
     private SceneManager() {
         InitializeSceneFile();
+        copyDefaultThemeIfMissing();
     }
 
     private void InitializeSceneFile() {
@@ -71,7 +75,8 @@ public class SceneManager {
 
             stage.setTitle(title);
             stage.setScene(scene);
-            
+            applyTheme(scene); // Applica il tema alla scena
+
             // mette lo stage al centro dello schermo
             stage.centerOnScreen();
 
@@ -112,6 +117,7 @@ public class SceneManager {
             popupStage.setTitle(title);
 
             Scene popupScene = new Scene(root, minWidth, minHeight);
+            applyTheme(popupScene); // Applica il tema alla scena popup
 
             popupStage.setScene(popupScene);
 
@@ -139,5 +145,36 @@ public class SceneManager {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    // Applica il tema alla scena
+    private void applyTheme(Scene scene) {
+        File externalCss = new File(SettingsManager.CSS_DIR + "/" + SettingsManager.getInstance().getTheme());
+        
+        if (externalCss.exists()) {
+            scene.getStylesheets().add(externalCss.toURI().toString());
+        } else {
+            // fallback al CSS interno nel jar — non può mai mancare
+            String internalCss = getClass()
+                .getResource("/com/cookie/tools/css/default.css")
+                .toExternalForm();
+            scene.getStylesheets().add(internalCss);
+            System.out.println("[WARN] Tema non trovato, uso il default interno");
+        }
+    }
+
+    private void copyDefaultThemeIfMissing() {
+        File defaultCss = new File(SettingsManager.CSS_DIR + "/default.css");
+        if (defaultCss.exists()) return;
+        
+        try (InputStream in = getClass()
+                .getResourceAsStream("/com/cookie/tools/css/default.css")) {
+            if (in != null) {
+                Files.copy(in, defaultCss.toPath());
+                System.out.println("Tema default copiato in: " + defaultCss.getAbsolutePath());
+            }
+        } catch (IOException e) {
+            System.out.println("Errore copia tema: " + e.getMessage());
+        }
     }
 }

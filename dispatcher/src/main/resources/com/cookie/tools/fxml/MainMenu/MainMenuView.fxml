@@ -56,7 +56,7 @@
               </rowConstraints>
                <children>
                   <Text scaleX="2.0" scaleY="2.0" strokeType="OUTSIDE" strokeWidth="0.0" text="%text.link" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-                  <Button fx:id="sendRequestButton" mnemonicParsing="false" onAction="#onSendRequestClick" prefWidth="200.0" text="%button.send" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.valignment="CENTER">
+                  <Button fx:id="sendRequestButton" mnemonicParsing="false" onAction="#onSendRequestClick" prefWidth="200.0" styleClass="send-button" text="%button.send" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.valignment="CENTER">
                      <padding>
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                      </padding>
@@ -69,13 +69,13 @@
       </GridPane>
       <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
          <children>
-            <Button fx:id="saveUrlButton" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onSaveUrlClick" prefHeight="40.0" prefWidth="175.0" text="%button.saveUrl" textAlignment="CENTER" />
-            <Button fx:id="loadUrlButton" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onLoadUrlClick" prefHeight="40.0" prefWidth="175.0" text="%button.loadUrl" textAlignment="CENTER" />
-            <Button fx:id="addHeaderButton" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onAddHeaderClick" prefHeight="40.0" prefWidth="175.0" text="%button.addHeader" textAlignment="CENTER" />
-            <Button fx:id="saveHeadersButton" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onSaveHeadersClick" prefHeight="40.0" prefWidth="175.0" text="%button.saveHeaders" textAlignment="CENTER" />
-            <Button fx:id="loadHeadersButton" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onLoadHeadersClick" prefHeight="40.0" prefWidth="175.0" text="%button.loadHeaders" textAlignment="CENTER" />
-            <Button fx:id="savePacketButton" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onSavePacketClick" prefHeight="40.0" prefWidth="175.0" text="%button.savePacket" textAlignment="CENTER" />
-            <Button fx:id="loadPacketButton" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onLoadPacketClick" prefHeight="40.0" prefWidth="175.0" text="%button.loadPacket" textAlignment="CENTER" />
+            <Button fx:id="saveUrlButton" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onSaveUrlClick" prefHeight="40.0" prefWidth="175.0" styleClass="secondary-button" text="%button.saveUrl" textAlignment="CENTER" />
+            <Button fx:id="loadUrlButton" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onLoadUrlClick" prefHeight="40.0" prefWidth="175.0" styleClass="secondary-button" text="%button.loadUrl" textAlignment="CENTER" />
+            <Button fx:id="addHeaderButton" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onAddHeaderClick" prefHeight="40.0" prefWidth="175.0" styleClass="secondary-button" text="%button.addHeader" textAlignment="CENTER" />
+            <Button fx:id="saveHeadersButton" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onSaveHeadersClick" prefHeight="40.0" prefWidth="175.0" styleClass="secondary-button" text="%button.saveHeaders" textAlignment="CENTER" />
+            <Button fx:id="loadHeadersButton" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onLoadHeadersClick" prefHeight="40.0" prefWidth="175.0" styleClass="secondary-button" text="%button.loadHeaders" textAlignment="CENTER" />
+            <Button fx:id="savePacketButton" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onSavePacketClick" prefHeight="40.0" prefWidth="175.0" styleClass="secondary-button" text="%button.savePacket" textAlignment="CENTER" />
+            <Button fx:id="loadPacketButton" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onLoadPacketClick" prefHeight="40.0" prefWidth="175.0" styleClass="secondary-button" text="%button.loadPacket" textAlignment="CENTER" />
          </children>
          <padding>
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
@@ -106,12 +106,12 @@
       </GridPane>
       <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER">
          <children>
-            <Button fx:id="settingsButton" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onSettingsClick" prefHeight="40.0" prefWidth="175.0" text="%button.settings" textAlignment="CENTER" />
-            <Button fx:id="openFileButton" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onOpenFileClick" prefHeight="40.0" prefWidth="175.0" text="%button.openFile" textAlignment="CENTER" />
-            <Button fx:id="clearBodyButton" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onClearBodyClick" prefHeight="40.0" prefWidth="175.0" text="%button.clearBody" textAlignment="CENTER" />
-            <Button fx:id="clearLogsButton1" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onClearLogsClick" prefHeight="40.0" prefWidth="175.0" text="%button.clearLogs" textAlignment="CENTER" />
-            <Button fx:id="saveLogButton" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onSaveLogClick" prefHeight="40.0" prefWidth="175.0" text="%button.saveLog" textAlignment="CENTER" />
-            <Button fx:id="resetButton" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onResetClick" prefHeight="40.0" prefWidth="175.0" text="%button.reset" textAlignment="CENTER" />
+            <Button fx:id="settingsButton" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onSettingsClick" prefHeight="40.0" prefWidth="175.0" styleClass="secondary-button" text="%button.settings" textAlignment="CENTER" />
+            <Button fx:id="openFileButton" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onOpenFileClick" prefHeight="40.0" prefWidth="175.0" styleClass="secondary-button" text="%button.openFile" textAlignment="CENTER" />
+            <Button fx:id="clearBodyButton" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onClearBodyClick" prefHeight="40.0" prefWidth="175.0" styleClass="secondary-button" text="%button.clearBody" textAlignment="CENTER" />
+            <Button fx:id="clearLogsButton1" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onClearLogsClick" prefHeight="40.0" prefWidth="175.0" styleClass="secondary-button" text="%button.clearLogs" textAlignment="CENTER" />
+            <Button fx:id="saveLogButton" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onSaveLogClick" prefHeight="40.0" prefWidth="175.0" styleClass="secondary-button" text="%button.saveLog" textAlignment="CENTER" />
+            <Button fx:id="resetButton" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onResetClick" prefHeight="40.0" prefWidth="175.0" styleClass="danger-button" text="%button.reset" textAlignment="CENTER" />
          </children>
          <padding>
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
@@ -122,8 +122,8 @@
       </HBox>
       <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
          <children>
-            <Button fx:id="settingsButton" maxHeight="-Infinity" minHeight="-Infinity" mnemonicParsing="false" onAction="#onSettingsClick" text="%button.settings" />
-            <Button fx:id="aboutButton" maxHeight="-Infinity" minHeight="-Infinity" mnemonicParsing="false" onAction="#onAboutClick" text="%button.about" />
+            <Button fx:id="settingsButton" maxHeight="-Infinity" minHeight="-Infinity" mnemonicParsing="false" onAction="#onSettingsClick" styleClass="menu-button" text="%button.settings" />
+            <Button fx:id="aboutButton" maxHeight="-Infinity" minHeight="-Infinity" mnemonicParsing="false" onAction="#onAboutClick" styleClass="menu-button" text="%button.about" />
          </children>
          <padding>
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />

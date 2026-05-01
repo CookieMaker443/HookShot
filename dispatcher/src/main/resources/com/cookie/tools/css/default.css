@@ -1,0 +1,72 @@
+/* ================================
+   BARRA IN ALTO - trasparenti
+   ================================ */
+.menu-button {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-cursor: hand;
+    -fx-padding: 2 8 2 8;
+}
+
+.menu-button:hover {
+    -fx-background-color: rgba(0, 0, 0, 0.08);
+    -fx-background-radius: 4;
+}
+
+.menu-button:pressed {
+    -fx-background-color: rgba(0, 0, 0, 0.15);
+}
+
+/* ================================
+   PULSANTE INVIA - verde, prominente
+   ================================ */
+.send-button {
+    -fx-background-color: #2e7d32;
+    -fx-text-fill: white;
+    -fx-cursor: hand;
+    -fx-font-weight: bold;
+    -fx-padding: 6 16 6 16;
+    -fx-background-radius: 4;
+}
+
+.send-button:hover {
+    -fx-background-color: #1b5e20;
+}
+
+.send-button:pressed {
+    -fx-background-color: #145214;
+}
+
+/* ================================
+   PULSANTE RESET - rosso, outline
+   ================================ */
+.danger-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #c62828;
+    -fx-border-color: #c62828;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-cursor: hand;
+    -fx-padding: 5 12 5 12;
+}
+
+.danger-button:hover {
+    -fx-background-color: rgba(198, 40, 40, 0.08);
+}
+
+/* ================================
+   PULSANTI SECONDARI - neutri
+   (salva, carica, aggiungi header ecc)
+   ================================ */
+.secondary-button {
+    -fx-background-color: transparent;
+    -fx-border-color: #757575;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-cursor: hand;
+    -fx-padding: 5 12 5 12;
+}
+
+.secondary-button:hover {
+    -fx-background-color: rgba(0, 0, 0, 0.06);
+}
