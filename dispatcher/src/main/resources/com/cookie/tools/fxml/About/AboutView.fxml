@@ -1,8 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.web.*?>
 
-<VBox xmlns:fx="http://javafx.com/fxml"
+<VBox spacing="15" alignment="CENTER"
+      style="-fx-padding: 30;"
+      xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.cookie.tools.controllers.About.AboutController">
-    <WebView fx:id="aboutWebView" VBox.vgrow="ALWAYS"/>
+
+    <Label text="HookShot" styleClass="about-title"/>
+    <Label text="v1.0.0" styleClass="about-version"/>
+
+    <Separator/>
+
+    <Label text="%about.description" wrapText="true" 
+           textAlignment="CENTER" styleClass="about-description"/>
+
+    <Separator/>
+
+    <Label text="CookieMaker443" styleClass="about-author"/>
+    <Hyperlink text="github.com/CookieMaker443/HookShot" 
+               onAction="#onGithubClick" styleClass="about-link"/>
+
+    <Separator/>
+
+    <Button text="☕ Buy me a coffee" onAction="#onCoffeeClick" 
+            styleClass="secondary-button"/>
+
+    <Separator/>
+
+    <Label text="%about.license" styleClass="about-license"/>
+
 </VBox>

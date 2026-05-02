@@ -70,3 +70,36 @@
 .secondary-button:hover {
     -fx-background-color: rgba(0, 0, 0, 0.06);
 }
+
+/* ================================
+   ABOUT PAGE
+   ================================ */
+.about-title {
+    -fx-font-size: 56px;
+    -fx-font-weight: bold;
+}
+
+.about-version {
+    -fx-font-size: 13px;
+    -fx-text-fill: #757575;
+}
+
+.about-description {
+    -fx-font-size: 13px;
+    -fx-text-fill: #424242;
+    -fx-max-width: 400px;
+}
+
+.about-author {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+.about-link {
+    -fx-font-size: 13px;
+}
+
+.about-license {
+    -fx-font-size: 11px;
+    -fx-text-fill: #9e9e9e;
+}
