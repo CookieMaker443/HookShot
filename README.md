@@ -3,6 +3,7 @@
 HookShot is an HTTP request dispatcher for local and remote networks.  
 It allows you to send configurable HTTP requests with custom headers, multiple bodies, and different HTTP methods — all from a simple graphical interface.
 <img width="1920" height="1080" alt="hookshot_mainmenu_censored" src="https://github.com/user-attachments/assets/28a2c72d-1775-4e16-861d-2725e482ec5f" />
+<img width="1548" height="896" alt="Screenshot_hookshot2" src="https://github.com/user-attachments/assets/8292e70a-4910-4824-9062-e5762acbf1da" />
 
 ---
 
