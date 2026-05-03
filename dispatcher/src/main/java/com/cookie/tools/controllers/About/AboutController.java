@@ -2,6 +2,7 @@ package com.cookie.tools.controllers.About;
 
 import javafx.fxml.FXML;
 
+@SuppressWarnings("unused")
 public class AboutController {
     
     @FXML

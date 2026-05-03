@@ -163,13 +163,15 @@ public class MainMenuController {
         TextField keyField = new TextField(key);
         keyField.setPromptText(t("header.key"));
         keyField.setPrefWidth(150);
+        keyField.getStyleClass().add("header-field"); // per il css
 
         TextField valueField = new TextField(value);
         valueField.setPromptText(t("header.value"));
         HBox.setHgrow(valueField, Priority.ALWAYS);
+        valueField.getStyleClass().add("header-field"); // per il css
 
         Button removeBtn = new Button("X");
-        removeBtn.setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
+        removeBtn.getStyleClass().add("header-remove-button"); // per il css
         removeBtn.setOnAction(e -> headersContainer.getChildren().remove(riga));
 
         riga.getChildren().addAll(keyField, valueField, removeBtn);
@@ -650,7 +652,7 @@ public class MainMenuController {
             event,
             SceneManager.SceneKeys.SETTINGS_VIEW,
             t("settings.title"),
-            350, 400
+            450, 300
         );
     }
 

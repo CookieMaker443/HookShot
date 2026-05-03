@@ -4,36 +4,40 @@
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Spinner?>
-<?import javafx.scene.control.SpinnerValueFactory?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox alignment="CENTER" spacing="20" style="-fx-padding: 20;" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/24.0.1" fx:controller="com.cookie.tools.controllers.Settings.SettingsController">
+<VBox alignment="CENTER" spacing="20" style="-fx-padding: 20;" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cookie.tools.controllers.Settings.SettingsController">
 
-    <GridPane hgap="10" vgap="15" alignment="CENTER">
+    <GridPane alignment="CENTER" hgap="10" vgap="15">
         <columnConstraints>
             <ColumnConstraints halignment="RIGHT" minWidth="150" />
-            <ColumnConstraints halignment="LEFT"  minWidth="120" />
+            <ColumnConstraints halignment="LEFT" minWidth="120" />
         </columnConstraints>
 
         <!-- Lingua -->
-        <Label text="%settings.language"  GridPane.columnIndex="0" GridPane.rowIndex="0" />
-        <ChoiceBox fx:id="languageChoiceBox" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+        <Label styleClass="settings-text-option" text="%settings.language" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+        <ChoiceBox styleClass="settings-choice-box" fx:id="languageChoiceBox" GridPane.columnIndex="1" GridPane.rowIndex="0" />
 
         <!-- Max richieste parallele -->
-        <Label text="%settings.maxRequests" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-        <Spinner fx:id="maxRequestsSpinner" initialValue="3" max="10" min="1" prefWidth="80"
-                 GridPane.columnIndex="1" GridPane.rowIndex="1" />
+        <Label styleClass="settings-text-option" text="%settings.maxRequests" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+        <Spinner styleClass="settings-spinner" fx:id="maxRequestsSpinner" initialValue="3" max="10" min="1" prefWidth="80" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 
         <!-- Versione HTTP -->
-        <Label text="%settings.httpVersion" GridPane.columnIndex="0" GridPane.rowIndex="2" />
-        <ChoiceBox fx:id="httpVersionChoiceBox" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+        <Label styleClass="settings-text-option" text="%settings.httpVersion" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+        <ChoiceBox styleClass="settings-choice-box" fx:id="httpVersionChoiceBox" GridPane.columnIndex="1" GridPane.rowIndex="2" />
 
         <!-- Tema -->
-        <Label text="%settings.theme" GridPane.columnIndex="0" GridPane.rowIndex="3" />
-        <ChoiceBox fx:id="themeChoiceBox" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+        <Label styleClass="settings-text-option" text="%settings.theme" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+        <ChoiceBox styleClass="settings-choice-box" fx:id="themeChoiceBox" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+      <rowConstraints>
+         <RowConstraints />
+         <RowConstraints />
+         <RowConstraints />
+         <RowConstraints />
+      </rowConstraints>
     </GridPane>
 
     <!-- Salva -->
