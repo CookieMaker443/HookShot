@@ -153,7 +153,7 @@ HookShot will split them and send them in parallel batches. The batch size is co
 - [ ] Pre-built installers for Linux (AppImage, .tar.gz) and Windows (.exe)
 - [ ] GitHub Actions release workflow
 - [ ] Auto-update check on startup
-- [ ] App icon
+- [X] App icon
 - [X] Screenshots in README
 
 ---
