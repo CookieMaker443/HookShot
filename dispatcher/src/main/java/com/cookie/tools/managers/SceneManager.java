@@ -54,11 +54,17 @@ public class SceneManager {
     }
 
     private void InitializeSceneFile() {
-        sceneBundle = ResourceBundle.getBundle("com.cookie.tools.scenes.scenes");
-        for (String key : sceneBundle.keySet()) {
-            FXML_SCENES.put(key, sceneBundle.getString(key));
+        try {
+            ClassLoader classLoader = getClass().getClassLoader();
+            sceneBundle = ResourceBundle.getBundle("com.cookie.tools.scenes.scenes", java.util.Locale.getDefault(), classLoader);
+            for (String key : sceneBundle.keySet()) {
+                FXML_SCENES.put(key, sceneBundle.getString(key));
+            }
+            FXML_SCENES = Collections.unmodifiableMap(FXML_SCENES);
+        } catch (Exception e) {
+            System.err.println("ERRORE CRITICO: Impossibile caricare scenes.properties!");
+            e.printStackTrace();
         }
-        FXML_SCENES = Collections.unmodifiableMap(FXML_SCENES);
     }
 
     public void loadScene(Stage stage, SceneKeys sceneKey, String title, double minWidth, double minHeight) {
