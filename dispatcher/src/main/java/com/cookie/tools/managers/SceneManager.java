@@ -3,11 +3,11 @@ package com.cookie.tools.managers;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
-import java.nio.file.Files;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
@@ -64,7 +64,13 @@ public class SceneManager {
     public void loadScene(Stage stage, SceneKeys sceneKey, String title, double minWidth, double minHeight) {
         try {
             // prende la scena passarta come parametro e la carica
-            loader = new FXMLLoader(getClass().getResource(FXML_SCENES.get(sceneKey.getKey())), LanguageManager.getInstance().getBundle());
+            String fxmlPath = FXML_SCENES.get(sceneKey.getKey());
+            var resource = getClass().getResource(fxmlPath);
+            
+            if (resource == null) {
+                throw new IOException("Non trovo il file FXML al percorso: " + fxmlPath);
+            }
+            loader = new FXMLLoader(resource, LanguageManager.getInstance().getBundle());
             
             // Carica il file FXML
             Parent root = loader.load();
