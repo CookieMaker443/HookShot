@@ -1,0 +1,328 @@
+name: Build and Release
+
+# ─────────────────────────────────────────────────────────────────────────────
+# TRIGGER
+# workflow_dispatch = attivazione manuale dalla tab "Actions" su GitHub.
+# Quando premi "Run workflow" GitHub ti mostra un form con i campi definiti
+# in "inputs". Puoi inserire la versione che vuoi rilasciare.
+# ─────────────────────────────────────────────────────────────────────────────
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Versione della release (es. 1.0.0) — deve corrispondere alla versione nel pom.xml'
+        required: true
+        default: '1.0.0'
+
+jobs:
+
+  # ───────────────────────────────────────────────────────────────────────────
+  # JOB 1 — BUILD LINUX
+  # Compila il progetto, crea un runtime Java minimale con jlink,
+  # impacchetta l'app con jpackage e crea un vero file .AppImage
+  # ───────────────────────────────────────────────────────────────────────────
+  build-linux:
+    runs-on: ubuntu-latest  # GitHub fornisce una VM Ubuntu fresh per questo job
+
+    steps:
+
+      # Scarica il codice sorgente della repo nel runner
+      - name: Checkout codice sorgente
+        uses: actions/checkout@v4
+
+      # Installa Java 21 Temurin nel runner.
+      # "Temurin" è la distribuzione JDK di Adoptium — gratuita, open source,
+      # la più usata nei workflow CI/CD. Include jpackage e jlink.
+      - name: Setup Java 21 (Temurin)
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      # Compila il progetto con Maven e produce il JAR in target/
+      # -DskipTests salta i test per velocizzare la build
+      - name: Build JAR con Maven
+        working-directory: dispatcher
+        run: mvn clean package -DskipTests
+
+      # Installa le dipendenze di sistema necessarie per jpackage e appimagetool
+      # fakeroot: permette di creare file con permessi root senza essere root
+      # binutils: contiene strumenti come objdump, usati da jpackage
+      # wget: per scaricare appimagetool
+      - name: Installa dipendenze di sistema
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y fakeroot binutils wget
+
+      # Scarica appimagetool — lo strumento ufficiale per creare file .AppImage
+      # Un AppImage è un singolo file eseguibile che contiene l'intera app
+      # e funziona su qualsiasi distro Linux senza installazione
+      - name: Scarica appimagetool
+        run: |
+          wget -q -O appimagetool \
+            https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage
+          chmod +x appimagetool  # rende il file eseguibile
+
+      # jlink crea un runtime Java minimale (custom JRE) che contiene solo
+      # i moduli necessari per la tua app. Invece di richiedere all'utente
+      # di avere Java installato, il runtime viene bundlato dentro l'app.
+      # --module-path: dove trovare i moduli JavaFX
+      # --add-modules: quali moduli includere nel runtime
+      # --output: dove salvare il runtime generato
+      - name: Crea runtime Java minimale con jlink
+        working-directory: dispatcher
+        run: |
+          jlink \
+            --module-path "$JAVA_HOME/jmods" \
+            --add-modules java.base,java.net.http,java.desktop,java.logging,java.xml,\
+          javafx.controls,javafx.fxml,javafx.graphics,javafx.base \
+            --strip-debug \
+            --compress 2 \
+            --no-header-files \
+            --no-man-pages \
+            --output target/custom-jre
+
+      # jpackage prende il JAR e il runtime Java e crea un pacchetto nativo.
+      # --type app-image: crea una cartella con l'app (non ancora AppImage)
+      # --runtime-image: usa il runtime minimale creato da jlink
+      # --input: cartella contenente il JAR
+      # --main-jar: quale JAR avviare
+      # --main-class: classe con il metodo main()
+      # --dest: dove salvare il risultato
+      - name: Crea app-image con jpackage
+        working-directory: dispatcher
+        run: |
+          jpackage \
+            --type app-image \
+            --runtime-image target/custom-jre \
+            --input target/ \
+            --name HookShot \
+            --main-jar dispatcher-${{ github.event.inputs.version }}.jar \
+            --main-class com.cookie.tools.App \
+            --app-version ${{ github.event.inputs.version }} \
+            --dest target/dist
+
+      # AppImage richiede una struttura di cartelle specifica chiamata "AppDir"
+      # con file obbligatori: AppRun (script di avvio), .desktop (metadati app),
+      # e un'icona. appimagetool converte questa struttura in un singolo file.
+      - name: Crea struttura AppDir
+        working-directory: dispatcher
+        run: |
+          # crea le cartelle necessarie per la struttura AppImage
+          mkdir -p target/AppDir/usr/bin
+          mkdir -p target/AppDir/usr/share/applications
+          mkdir -p target/AppDir/usr/share/icons/hicolor/256x256/apps
+
+          # copia tutto il contenuto generato da jpackage dentro AppDir
+          cp -r target/dist/HookShot/* target/AppDir/usr/bin/
+
+          # file .desktop: descrive l'app al sistema operativo
+          # (nome, icona, categoria, comando di avvio)
+          cat > target/AppDir/HookShot.desktop << 'EOF'
+          [Desktop Entry]
+          Name=HookShot
+          Comment=HTTP request dispatcher
+          Exec=HookShot
+          Icon=hookshot
+          Type=Application
+          Categories=Network;Development;
+          Terminal=false
+          EOF
+
+          # copia l'icona dell'app nella posizione corretta
+          cp ../src/main/resources/com/cookie/tools/icons/hookshot.png \
+          target/AppDir/usr/share/icons/hicolor/256x256/apps/hookshot.png
+          
+          # link simbolico dell'icona nella root di AppDir (richiesto da AppImage)
+          ln -sf usr/share/icons/hicolor/256x256/apps/hookshot.png \
+            target/AppDir/hookshot.png
+
+          # AppRun: script eseguito quando l'utente avvia l'AppImage.
+          # SELF = path dell'AppImage stesso
+          # HERE = cartella che contiene l'AppImage
+          # Poi avvia il binario HookShot passando tutti gli argomenti ($@)
+          cat > target/AppDir/AppRun << 'EOF'
+          #!/bin/bash
+          SELF=$(readlink -f "$0")
+          HERE=${SELF%/*}
+          exec "$HERE/usr/bin/HookShot" "$@"
+          EOF
+          
+          chmod +x target/AppDir/AppRun  # AppRun deve essere eseguibile
+
+      # appimagetool prende la cartella AppDir e la trasforma in un singolo
+      # file .AppImage eseguibile su qualsiasi distro Linux x86_64
+      - name: Crea il file .AppImage
+        working-directory: dispatcher
+        run: |
+          ./../../appimagetool \
+            target/AppDir \
+            target/dist/HookShot-${{ github.event.inputs.version }}-x86_64.AppImage
+
+      # Salva l'AppImage come "artifact" del workflow.
+      # Gli artifacts sono file prodotti da un job che possono essere
+      # scaricati dagli altri job o dall'interfaccia GitHub Actions.
+      - name: Salva AppImage come artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-build
+          path: dispatcher/target/dist/HookShot-${{ github.event.inputs.version }}-x86_64.AppImage
+          retention-days: 7  # cancella l'artifact dopo 7 giorni (la release è permanente)
+
+
+  # ───────────────────────────────────────────────────────────────────────────
+  # JOB 2 — BUILD WINDOWS
+  # Compila il progetto e crea un installer .msi per Windows
+  # Questo job gira in parallelo a build-linux su una VM Windows separata
+  # ───────────────────────────────────────────────────────────────────────────
+  build-windows:
+    runs-on: windows-latest  # GitHub fornisce una VM Windows fresh per questo job
+
+    steps:
+
+      - name: Checkout codice sorgente
+        uses: actions/checkout@v4
+
+      - name: Setup Java 21 (Temurin)
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Build JAR con Maven
+        working-directory: dispatcher
+        run: mvn clean package -DskipTests
+
+      # jlink su Windows — stesso concetto di Linux, crea un runtime minimale
+      # Su Windows il separatore del module-path è ";" invece di ":"
+      - name: Crea runtime Java minimale con jlink
+        working-directory: dispatcher
+        run: |
+          jlink `
+            --module-path "$env:JAVA_HOME/jmods" `
+            --add-modules java.base,java.net.http,java.desktop,java.logging,java.xml,javafx.controls,javafx.fxml,javafx.graphics,javafx.base `
+            --strip-debug `
+            --compress 2 `
+            --no-header-files `
+            --no-man-pages `
+            --output target/custom-jre
+
+      # jpackage su Windows crea un installer .msi
+      # Nota: su Windows PowerShell usa il backtick ` per andare a capo
+      # invece del backslash \ usato su Linux/bash
+      # --type msi: crea un installer Windows standard
+      # --win-menu: aggiunge HookShot al menu Start
+      # --win-shortcut: crea un collegamento sul Desktop
+      # --win-dir-chooser: permette all'utente di scegliere la cartella di installazione
+      - name: Crea installer .msi con jpackage
+        working-directory: dispatcher
+        run: |
+          jpackage `
+            --type msi `
+            --runtime-image target/custom-jre `
+            --input target/ `
+            --name HookShot `
+            --main-jar dispatcher-${{ github.event.inputs.version }}.jar `
+            --main-class com.cookie.tools.App `
+            --app-version ${{ github.event.inputs.version }} `
+            --icon src/main/resources/com/cookie/tools/icons/hookshot.ico `
+            --win-menu `
+            --win-shortcut `
+            --win-dir-chooser `
+            --dest target/dist
+
+      - name: Salva MSI come artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-build
+          path: dispatcher/target/dist/*.msi
+          retention-days: 7
+
+
+  # ───────────────────────────────────────────────────────────────────────────
+  # JOB 3 — CREA GITHUB RELEASE
+  # Aspetta che build-linux e build-windows finiscano entrambi,
+  # scarica i file prodotti e crea la Release ufficiale su GitHub
+  # ───────────────────────────────────────────────────────────────────────────
+  release:
+    # "needs" definisce le dipendenze tra job.
+    # Questo job parte SOLO quando build-linux E build-windows sono completati
+    # con successo. Se uno dei due fallisce, la release non viene creata.
+    needs: [build-linux, build-windows]
+    runs-on: ubuntu-latest
+
+    # permissions: necessario per permettere al workflow di creare Release
+    # e pushare tag su GitHub tramite il token automatico GITHUB_TOKEN
+    permissions:
+      contents: write
+
+    steps:
+
+      # Scarica l'AppImage prodotta dal job build-linux
+      - name: Scarica artifact Linux
+        uses: actions/download-artifact@v4
+        with:
+          name: linux-build
+          path: artifacts/linux  # cartella locale dove salvare il file
+
+      # Scarica il .msi prodotto dal job build-windows
+      - name: Scarica artifact Windows
+        uses: actions/download-artifact@v4
+        with:
+          name: windows-build
+          path: artifacts/windows
+
+      # Crea la GitHub Release con tutti i file allegati.
+      # softprops/action-gh-release è un'action popolare che gestisce:
+      # - creazione del tag git (es. v1.0.0)
+      # - creazione della pagina Release su GitHub
+      # - upload dei file come asset scaricabili
+      - name: Crea GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          # tag_name: il tag git creato automaticamente (es. v1.0.0)
+          tag_name: v${{ github.event.inputs.version }}
+          
+          # name: il titolo della release visibile su GitHub
+          name: HookShot v${{ github.event.inputs.version }}
+          
+          # body: testo della release in Markdown
+          # appare nella pagina della release su GitHub
+          body: |
+            ## HookShot v${{ github.event.inputs.version }}
+
+            HTTP request dispatcher for local and remote networks.
+
+            ---
+
+            ### Download
+
+            | Platform | File | Note |
+            |---|---|---|
+            | 🐧 Linux | `.AppImage` | rendi eseguibile con `chmod +x` poi lancia |
+            | 🪟 Windows | `.msi` | lancia e segui il wizard di installazione |
+
+            ---
+
+            ### Requirements
+            Java non richiesto — il runtime è incluso nel pacchetto.
+
+            ---
+
+            ### Changelog
+            - Prima release ufficiale
+
+          # files: percorsi dei file da allegare alla release
+          # usa glob pattern per trovare i file nelle cartelle degli artifacts
+          files: |
+            artifacts/linux/*.AppImage
+            artifacts/windows/*.msi
+
+          # draft: false = pubblica subito, true = salva come bozza
+          draft: false
+          
+          # prerelease: true = marcata come "pre-release" su GitHub (es. per beta)
+          prerelease: false
+
+
+# Grazie Claude per l'aiuto, numero uno :3 

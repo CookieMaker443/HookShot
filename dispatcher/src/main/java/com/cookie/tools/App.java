@@ -4,8 +4,8 @@ import com.cookie.tools.managers.LanguageManager;
 import com.cookie.tools.managers.SceneManager;
 
 import javafx.application.Application;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
-
 
 /**
  * JavaFX App
@@ -18,7 +18,14 @@ public class App extends Application {
         final double MIN_WIDTH = 1500;
         final double MIN_HEIGHT = 750;
 
-        // LanguageManager.getInstance();               // Inizializza il LanguageManager
+        // carica l'icona dalla cartella resources
+        Image icon = new Image(
+            getClass().getResourceAsStream(
+                "/com/cookie/tools/icons/hookshot.png"
+            )
+        );
+        stage.getIcons().add(icon);
+        
         // Inizializza lo SceneManager
         SceneManager.getInstance()
                 .loadScene(stage, SceneManager.SceneKeys.MAIN_MENU_VIEW, 
