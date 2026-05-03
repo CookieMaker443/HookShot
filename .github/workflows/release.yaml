@@ -33,11 +33,12 @@ jobs:
       # Installa Java 21 Temurin nel runner.
       # "Temurin" è la distribuzione JDK di Adoptium — gratuita, open source,
       # la più usata nei workflow CI/CD. Include jpackage e jlink.
-      - name: Setup Java 21 (Temurin)
+      - name: Setup Java 21 (Zulu)
         uses: actions/setup-java@v4
         with:
           java-version: '21'
-          distribution: 'temurin'
+          distribution: 'zulu'
+          java-package: 'jdk+fx'  # <--- Questa direttiva include JavaFX
 
       # Compila il progetto con Maven e produce il JAR in target/
       # -DskipTests salta i test per velocizzare la build
@@ -183,11 +184,12 @@ jobs:
       - name: Checkout codice sorgente
         uses: actions/checkout@v4
 
-      - name: Setup Java 21 (Temurin)
+      - name: Setup Java 21 (Zulu)
         uses: actions/setup-java@v4
         with:
           java-version: '21'
-          distribution: 'temurin'
+          distribution: 'zulu'
+          java-package: 'jdk+fx'  # Include JavaFX
 
       - name: Build JAR con Maven
         working-directory: dispatcher
