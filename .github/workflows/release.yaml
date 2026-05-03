@@ -97,7 +97,8 @@ jobs:
         run: |
           # 1. Crea una cartella pulita solo per l'input
           mkdir -p target/jpackage-input
-          cp target/dispatcher-${{ github.event.inputs.version }}.jar target/jpackage-input/
+          cp target/dispatcher-shaded.jar target/jpackage-input/HookShot.jar
+          #cp target/dispatcher-${{ github.event.inputs.version }}.jar target/jpackage-input/
 
 
           jpackage \
@@ -105,7 +106,7 @@ jobs:
             --runtime-image target/custom-jre \
             --input target/jpackage-input \
             --name HookShot \
-            --main-jar dispatcher-${{ github.event.inputs.version }}.jar \
+            --main-jar HookShot.jar \
             --main-class com.cookie.tools.App \
             --app-version ${{ github.event.inputs.version }} \
             --dest target/dist
