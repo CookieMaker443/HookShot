@@ -116,25 +116,26 @@ jobs:
       - name: Crea struttura AppDir
         working-directory: dispatcher
         run: |
+          # Pulizia totale della destinazione per evitare conflitti di permessi
+          rm -rf target/AppDir
+
           # crea le cartelle necessarie per la struttura AppImage
           mkdir -p target/AppDir/usr/bin
           mkdir -p target/AppDir/usr/lib
           mkdir -p target/AppDir/usr/share/applications
           mkdir -p target/AppDir/usr/share/icons/hicolor/256x256/apps
 
-          # 2. Copia TUTTO quello che jpackage ha generato dentro usr/
+          # Copia TUTTO quello che jpackage ha generato dentro usr/
           # Questo copierà correttamente bin/, lib/ e tutto il resto mantenendo i permessi
           cp -r target/dist/HookShot/* target/AppDir/usr/
 
-          # --- DEBUG: Questo ci dirà nel log dove si trova davvero il file HookShot ---
-          echo "Struttura generata dentro AppDir:"
-          find target/AppDir -name "HookShot"
-          # -------------------------------------------------------------------------
+          # Sblocchiamo i permessi di scrittura su tutto
+          # Questo risolve i "Permission denied" sui file legal di Java
+          chmod -R +w target/AppDir
 
-          # copia tutto il contenuto generato da jpackage dentro AppDir
-          # jpackage crea una cartella 'HookShot' che contiene a sua volta 'bin' e 'lib'
-          cp -r target/dist/HookShot/* target/AppDir/usr/bin/
-          cp -r target/dist/HookShot/lib/* target/AppDir/usr/lib/
+          # --- DEBUG: Conferma la posizione del binario ---
+          echo "Verifica posizione binario:"
+          find target/AppDir -name "HookShot"
 
           # file .desktop: descrive l'app al sistema operativo
           # (nome, icona, categoria, comando di avvio)
@@ -173,7 +174,7 @@ jobs:
           
           chmod +x target/AppDir/AppRun  # AppRun deve essere eseguibile
           # Assicuriamoci che il binario interno sia eseguibile
-          chmod +x target/AppDir/usr/bin/HookShot || true
+          chmod +x target/AppDir/usr/bin/HookShot
 
       # appimagetool prende la cartella AppDir e la trasforma in un singolo
       # file .AppImage eseguibile su qualsiasi distro Linux x86_64
