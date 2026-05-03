@@ -63,7 +63,7 @@ public class SceneManager {
             FXML_SCENES = Collections.unmodifiableMap(FXML_SCENES);
         } catch (Exception e) {
             System.err.println("ERRORE CRITICO: Impossibile caricare scenes.properties!");
-            e.printStackTrace();
+            // e.printStackTrace();
         }
     }
 
