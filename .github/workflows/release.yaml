@@ -168,7 +168,7 @@ jobs:
         run: |
           # Andiamo a prendere l'eseguibile 'AppRun' dentro la cartella estratta.
           # Nota: 'squashfs-root' è il nome di default della cartella estratta.
-          ../squashfs-root/AppRun \
+          ARCH=x86_64 ../squashfs-root/AppRun \
             target/AppDir \
             target/dist/HookShot-${{ github.event.inputs.version }}-x86_64.AppImage
 
