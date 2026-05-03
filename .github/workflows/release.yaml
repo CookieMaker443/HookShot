@@ -136,7 +136,7 @@ jobs:
           EOF
 
           # copia l'icona dell'app nella posizione corretta
-          cp ../src/main/resources/com/cookie/tools/icons/hookshot.png \
+          cp /src/main/resources/com/cookie/tools/icons/hookshot.png \
           target/AppDir/usr/share/icons/hicolor/256x256/apps/hookshot.png
           
           # link simbolico dell'icona nella root di AppDir (richiesto da AppImage)
@@ -161,7 +161,7 @@ jobs:
       - name: Crea il file .AppImage
         working-directory: dispatcher
         run: |
-          ./../../appimagetool \
+          ../appimagetool \
             target/AppDir \
             target/dist/HookShot-${{ github.event.inputs.version }}-x86_64.AppImage
 
