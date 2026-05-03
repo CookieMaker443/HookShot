@@ -12,7 +12,7 @@ public class AboutController {
 
     @FXML
     private void onCoffeeClick() {
-        openUrlwithThread("https://buymeacoffee.com/"); // aggiungi dopo
+        openUrlwithThread("https://buymeacoffee.com/cookiemaker"); // aggiungi dopo
     }
 
     private void openUrlnormal(String url) {
