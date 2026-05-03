@@ -93,10 +93,15 @@ jobs:
       - name: Crea app-image con jpackage
         working-directory: dispatcher
         run: |
+          # 1. Crea una cartella pulita solo per l'input
+          mkdir -p target/jpackage-input
+          cp target/dispatcher-${{ github.event.inputs.version }}.jar target/jpackage-input/
+
+
           jpackage \
             --type app-image \
             --runtime-image target/custom-jre \
-            --input target/ \
+            --input target/jpackage-input \
             --name HookShot \
             --main-jar dispatcher-${{ github.event.inputs.version }}.jar \
             --main-class com.cookie.tools.App \
