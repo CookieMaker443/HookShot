@@ -464,29 +464,9 @@ public class MainMenuController {
             // sendAsync non blocca il thread UI: la richiesta parte in background
             // e thenAccept viene chiamato quando la risposta arriva
 
-            System.out.println("=== DEBUG REQUEST ===");
-            System.out.println("URL: " + url);
-            System.out.println("Method: " + method);
-            System.out.println("Body: " + body);
-            request.headers().map().forEach((k, v) -> 
-                System.out.println("Header: " + k + " = " + v));
-            System.out.println("====================");
-
             return client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
                 .thenAccept(response -> {
-                    System.out.println("=== DEBUG RESPONSE ===");
-                    System.out.println("Status: " + response.statusCode());
-                    System.out.println("Body: " + response.body());
-                    System.out.println("======================");
-
                     Platform.runLater(() -> {
-
-                        System.out.println("=== DEBUG RESPONSE2 ===");
-                        System.out.println("Status: " + response.statusCode());
-                        System.out.println("Body raw: '" + response.body() + "'");
-                        System.out.println("Body length: " + response.body().length());
-                        System.out.println("======================");
-
                         logArea.appendText("=== [" + bodyIndex + "/" + total + "] " + t("response.responseTitle") + " ===\n");
                         logArea.appendText(t("response.bodySent") + ": " + (body.isEmpty() ? t("response.bodySentEmpty") : body) + "\n");
                         logArea.appendText(t("response.status") + ": " + response.statusCode() + "\n");

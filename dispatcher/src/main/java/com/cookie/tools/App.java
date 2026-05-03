@@ -19,13 +19,10 @@ public class App extends Application {
         final double MIN_HEIGHT = 750;
 
         // carica l'icona dalla cartella resources
-        Image icon = new Image(
-            getClass().getResourceAsStream(
-                "/com/cookie/tools/icons/hookshot.png"
-            )
-        );
+        String iconPath = getClass().getResource("/com/cookie/tools/icons/hookshot.png").toExternalForm();
+        Image icon = new Image(iconPath);
         stage.getIcons().add(icon);
-        
+
         // Inizializza lo SceneManager
         SceneManager.getInstance()
                 .loadScene(stage, SceneManager.SceneKeys.MAIN_MENU_VIEW, 
