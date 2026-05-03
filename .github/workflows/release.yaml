@@ -63,6 +63,8 @@ jobs:
           wget -q -O appimagetool \
             https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage
           chmod +x appimagetool  # rende il file eseguibile
+          # L'opzione --appimage-extract crea una cartella chiamata 'squashfs-root'
+          ./appimagetool --appimage-extract
 
       # jlink crea un runtime Java minimale (custom JRE) che contiene solo
       # i moduli necessari per la tua app. Invece di richiedere all'utente
@@ -164,7 +166,9 @@ jobs:
       - name: Crea il file .AppImage
         working-directory: dispatcher
         run: |
-          ../appimagetool \
+          # Andiamo a prendere l'eseguibile 'AppRun' dentro la cartella estratta.
+          # Nota: 'squashfs-root' è il nome di default della cartella estratta.
+          ../squashfs-root/AppRun \
             target/AppDir \
             target/dist/HookShot-${{ github.event.inputs.version }}-x86_64.AppImage
 
