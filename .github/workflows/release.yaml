@@ -118,11 +118,14 @@ jobs:
         run: |
           # crea le cartelle necessarie per la struttura AppImage
           mkdir -p target/AppDir/usr/bin
+          mkdir -p target/AppDir/usr/lib
           mkdir -p target/AppDir/usr/share/applications
           mkdir -p target/AppDir/usr/share/icons/hicolor/256x256/apps
 
           # copia tutto il contenuto generato da jpackage dentro AppDir
+          # jpackage crea una cartella 'HookShot' che contiene a sua volta 'bin' e 'lib'
           cp -r target/dist/HookShot/* target/AppDir/usr/bin/
+          cp -r target/dist/HookShot/lib/* target/AppDir/usr/lib/
 
           # file .desktop: descrive l'app al sistema operativo
           # (nome, icona, categoria, comando di avvio)
@@ -154,9 +157,9 @@ jobs:
           # Poi avvia il binario HookShot passando tutti gli argomenti ($@)
           cat > target/AppDir/AppRun << 'EOF'
           #!/bin/bash
-          SELF=$(readlink -f "$0")
-          HERE=${SELF%/*}
-          exec "$HERE/usr/bin/HookShot" "$@"
+          HERE="$(dirname "$(readlink -f "${0}")")"
+          # L'eseguibile ora è in usr/bin/HookShot
+          exec "${HERE}/usr/bin/HookShot" "$@"
           EOF
           
           chmod +x target/AppDir/AppRun  # AppRun deve essere eseguibile
