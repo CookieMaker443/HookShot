@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox alignment="CENTER" spacing="20" style="-fx-padding: 20;" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cookie.tools.controllers.Settings.SettingsController">
+<VBox alignment="CENTER" spacing="20" style="-fx-padding: 20;" styleClass="settings-background" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cookie.tools.controllers.Settings.SettingsController">
 
     <GridPane alignment="CENTER" hgap="10" vgap="15">
         <columnConstraints>
@@ -19,19 +19,19 @@
 
         <!-- Lingua -->
         <Label styleClass="settings-text-option" text="%settings.language" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-        <ChoiceBox styleClass="settings-choice-box" fx:id="languageChoiceBox" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+        <ChoiceBox fx:id="languageChoiceBox" styleClass="settings-choice-box" GridPane.columnIndex="1" GridPane.rowIndex="0" />
 
         <!-- Max richieste parallele -->
         <Label styleClass="settings-text-option" text="%settings.maxRequests" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-        <Spinner styleClass="settings-spinner" fx:id="maxRequestsSpinner" initialValue="3" max="10" min="1" prefWidth="80" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+        <Spinner fx:id="maxRequestsSpinner" initialValue="3" max="10" min="1" prefWidth="80" styleClass="settings-spinner" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 
         <!-- Versione HTTP -->
         <Label styleClass="settings-text-option" text="%settings.httpVersion" GridPane.columnIndex="0" GridPane.rowIndex="2" />
-        <ChoiceBox styleClass="settings-choice-box" fx:id="httpVersionChoiceBox" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+        <ChoiceBox fx:id="httpVersionChoiceBox" styleClass="settings-choice-box" GridPane.columnIndex="1" GridPane.rowIndex="2" />
 
         <!-- Tema -->
         <Label styleClass="settings-text-option" text="%settings.theme" GridPane.columnIndex="0" GridPane.rowIndex="3" />
-        <ChoiceBox styleClass="settings-choice-box" fx:id="themeChoiceBox" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+        <ChoiceBox fx:id="themeChoiceBox" styleClass="settings-choice-box" GridPane.columnIndex="1" GridPane.rowIndex="3" />
       <rowConstraints>
          <RowConstraints />
          <RowConstraints />
@@ -41,6 +41,6 @@
     </GridPane>
 
     <!-- Salva -->
-    <Button onAction="#onSaveClick" text="%settings.save" />
+    <Button onAction="#onSaveClick" styleClass="safe-button" text="%settings.save" />
 
 </VBox>

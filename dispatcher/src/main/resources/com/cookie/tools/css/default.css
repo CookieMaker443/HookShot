@@ -15,12 +15,18 @@
 
 
 /* MAINMENU */
+/* sfondo */
+.mainmenu-background {
+    -fx-background-color: background-medium;
+    /*-fx-background-radius: 4;*/
+}
 /* ================================
    BARRA IN ALTO - trasparenti
    ================================ */
 .menu-button {
     -fx-background-color: transparent;
     -fx-border-color: transparent;
+    -fx-text-fill: text-primary;
     -fx-font-family: font-family-primary;
     -fx-cursor: hand;
     -fx-padding: 2 8 2 8;
@@ -38,7 +44,7 @@
 /* ================================
    PULSANTE INVIA - verde, prominente
    ================================ */
-.send-button {
+.safe-button {
     -fx-background-color: positive-color;
     -fx-text-fill: white;
     -fx-cursor: hand;
@@ -47,11 +53,11 @@
     -fx-background-radius: 4;
 }
 
-.send-button:hover {
+.safe-button:hover {
     -fx-background-color: #1b5e20;
 }
 
-.send-button:pressed {
+.safe-button:pressed {
     -fx-background-color: #145214;
 }
 
@@ -78,6 +84,7 @@
    ================================ */
 .secondary-button {
     -fx-background-color: background-light;
+    -fx-text-fill: text-primary-inverted;
     -fx-border-color: border-color;
     -fx-border-radius: 4;
     -fx-background-radius: 4;
@@ -123,7 +130,6 @@
 
 /* menu a tendina per scegliere il metodo */
 .method-choice-box {
-    -fx-background-color: background-light;
     -fx-border-color: border-color;
     -fx-border-radius: 4;
     -fx-background-radius: 4;
@@ -134,7 +140,7 @@
 
 /* il testo selezionato visibile */
 .method-choice-box .label {
-    -fx-text-fill: text-primary-inverted;
+    -fx-text-fill: black;
     -fx-font-family: font-family-primary;
     -fx-font-size: 13px;
 }
@@ -153,17 +159,16 @@
 .method-choice-box-popup .choice-box-item {
     -fx-font-family: font-family-primary;
     -fx-font-size: 13px;
-    -fx-text-fill: text-primary;
-    -fx-background-color: background-medium;
+    /*-fx-text-fill: text-primary;*/
 }
 
 .method-choice-box-popup .choice-box-item:hover {
     -fx-background-color: accent-color;
 }
+
 /* per la riga di tutto il campo, URL, metodo e titolo */
 .url-row {
     -fx-background-color: background-dark;
-    /*-fx-background-radius: 4;*/
     -fx-padding: 5;
 }
 
@@ -216,6 +221,7 @@
     -fx-font-family: font-family-primary;
     -fx-font-size: 13px;
     -fx-background-color: background-light;
+    -fx-text-fill: text-primary-inverted;
     -fx-border-color: border-color;
     -fx-border-radius: 4;
     -fx-background-radius: 4;
@@ -226,6 +232,12 @@
 .body-area .content {
     -fx-background-color: background-light;
 }
+
+/* risolve un bug, rimanevano due pixel bianchi */
+.body-area .scroll-pane .viewport{
+    -fx-background-color: background-light;
+}
+
 
 /* ================================
    LOG AREA
@@ -244,7 +256,10 @@
     -fx-background-color: background-dark;
 }
 
-
+/* risolve un bug, rimanevano due pixel bianchi */
+.log-area .scroll-pane .viewport{
+    -fx-background-color: background-dark;
+}
 
 
 /* ABOUT PAGE */
@@ -280,6 +295,15 @@
 }
 
 /* SETTINGS PAGE */
+
+
+.settings-background {
+    -fx-background-color: background-light;
+    -fx-border-color: border-color;
+    -fx-background-radius: 4;
+    -fx-padding: 20;
+}
+
 .settings-text-option {
     -fx-font-size: 13px;
     -fx-text-fill: text-primary-inverted;
@@ -290,7 +314,7 @@
     -fx-background-color: background-light;
     -fx-border-color: border-color;
     -fx-border-radius: 4;
-    -fx-background-radius: 4;
+    /*-fx-background-radius: 4;*/
     -fx-padding: 0 8 0 8;
     -fx-font-family: font-family-primary;
     -fx-font-size: 13px;
@@ -298,8 +322,8 @@
 
 /* il campo di testo del spinner */
 .settings-spinner .text-field {
-    -fx-background-radius: 4;
-    -fx-border-radius: 4;
+    /*-fx-background-radius: 4;
+    -fx-border-radius: 4;*/
     -fx-background-color: background-light;
     -fx-text-fill: text-primary-inverted;
     -fx-font-family: font-family-primary;
@@ -334,6 +358,11 @@
     -fx-font-size: 13px;
 }
 
+/* sfondo del menu a tendina */
+.settings-choice-box .context-menu{
+    -fx-background-color: background-light;
+}
+
 /* il testo selezionato visibile */
 .settings-choice-box .label {
     -fx-text-fill: text-primary-inverted;
@@ -351,15 +380,13 @@
     -fx-background-color: text-primary-inverted;
 }
 
-/* il menu che si apre */
-.settings-choice-box-popup .choice-box-item {
-    -fx-font-family: font-family-primary;
-    -fx-font-size: 13px;
-    -fx-text-fill: text-primary;
-    -fx-background-color: background-medium;
+/* il label NON hover del menu aperto */
+.settings-choice-box .menu-item > .label {
+    -fx-text-fill: text-primary-inverted;
 }
 
-.settings-choice-box-popup .choice-box-item:hover {
-    -fx-background-color: accent-color;
+/* il labeò hover del menu aperto */
+.settings-choice-box .menu-item:focused > .label {
+    -fx-text-fill: text-primary-inverted;
 }
 

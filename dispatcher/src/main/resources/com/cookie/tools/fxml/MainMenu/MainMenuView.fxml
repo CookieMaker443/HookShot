@@ -14,7 +14,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="1500.0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cookie.tools.controllers.MainMenu.MainMenuController">
+<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="1500.0" styleClass="mainmenu-background" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cookie.tools.controllers.MainMenu.MainMenuController">
   <columnConstraints>
     <ColumnConstraints hgrow="SOMETIMES" minWidth="-Infinity" prefWidth="500.0" />
   </columnConstraints>
@@ -35,7 +35,7 @@
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
          </padding>
       </HBox>
-      <GridPane gridLinesVisible="true" maxHeight="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="100.0" prefWidth="750.0" styleClass="url-row" GridPane.rowIndex="1">
+      <GridPane maxHeight="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="100.0" prefWidth="750.0" styleClass="url-row" GridPane.rowIndex="1">
         <columnConstraints>
           <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="200.0" />
           <ColumnConstraints hgrow="SOMETIMES" minWidth="-Infinity" prefWidth="500.0" />
@@ -65,7 +65,7 @@
               </rowConstraints>
                <children>
                   <Text scaleX="2.0" scaleY="2.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="%text.link" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-                  <Button fx:id="sendRequestButton" mnemonicParsing="false" onAction="#onSendRequestClick" prefWidth="200.0" styleClass="send-button" text="%button.send" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.valignment="CENTER">
+                  <Button fx:id="sendRequestButton" mnemonicParsing="false" onAction="#onSendRequestClick" prefWidth="200.0" styleClass="safe-button" text="%button.send" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.valignment="CENTER">
                      <padding>
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                      </padding>
@@ -76,7 +76,7 @@
             </GridPane>
          </children>
       </GridPane>
-      <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="10.0" styleClass="button-row" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
+      <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
          <children>
             <Button fx:id="saveUrlButton" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onSaveUrlClick" prefHeight="40.0" prefWidth="175.0" styleClass="secondary-button" text="%button.saveUrl" textAlignment="CENTER" />
             <Button fx:id="loadUrlButton" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onLoadUrlClick" prefHeight="40.0" prefWidth="175.0" styleClass="secondary-button" text="%button.loadUrl" textAlignment="CENTER" />
@@ -89,7 +89,7 @@
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
          </padding>
       </HBox>
-      <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="10.0" styleClass="button-row" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER">
+      <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER">
          <children>
             <Button fx:id="openFileButton" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onOpenFileClick" prefHeight="40.0" prefWidth="175.0" styleClass="secondary-button" text="%button.openFile" textAlignment="CENTER" />
             <Button fx:id="clearBodyButton" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onClearBodyClick" prefHeight="40.0" prefWidth="175.0" styleClass="secondary-button" text="%button.clearBody" textAlignment="CENTER" />
@@ -105,7 +105,7 @@
             <Insets bottom="10.0" left="10.0" right="10.0" />
          </opaqueInsets>
       </HBox>
-      <GridPane gridLinesVisible="true" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="750.0" GridPane.rowIndex="4">
+      <GridPane gridLinesVisible="true" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="750.0" styleClass="mainmenu-background" GridPane.rowIndex="4">
          <columnConstraints>
             <ColumnConstraints hgrow="SOMETIMES" maxWidth="600.0" minWidth="-Infinity" prefWidth="250.0" />
             <ColumnConstraints hgrow="SOMETIMES" minWidth="-Infinity" prefWidth="300.0" />
