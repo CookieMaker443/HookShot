@@ -162,6 +162,9 @@ jobs:
           ln -sf usr/share/icons/hicolor/256x256/apps/hookshot.png \
             target/AppDir/hookshot.png
 
+          # Copia l'icona anche nella root con il nome generico (standard AppImage)
+          cp src/main/resources/com/cookie/tools/icons/hookshot.png target/AppDir/.DirIcon
+
           # AppRun: script eseguito quando l'utente avvia l'AppImage.
           # SELF = path dell'AppImage stesso
           # HERE = cartella che contiene l'AppImage
