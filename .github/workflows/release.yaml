@@ -247,12 +247,16 @@ jobs:
       - name: Crea installer .msi con jpackage
         working-directory: dispatcher
         run: |
+          # Prepariamo l'input come abbiamo fatto su Linux
+          mkdir target\jpackage-input
+          cp target\dispatcher-shaded.jar target\jpackage-input\HookShot.jar
+      
           jpackage `
             --type msi `
             --runtime-image target/custom-jre `
-            --input target/ `
+            --input target/jpackage-input `
             --name HookShot `
-            --main-jar dispatcher-${{ github.event.inputs.version }}.jar `
+            --main-jar HookShot.jar `
             --main-class com.cookie.tools.App `
             --app-version ${{ github.event.inputs.version }} `
             --icon src/main/resources/com/cookie/tools/icons/hookshot.ico `
